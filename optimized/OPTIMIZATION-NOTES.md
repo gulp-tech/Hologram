@@ -7,10 +7,29 @@
 - Добавлены комментарии для дальнейшей оптимизации
 
 ## Что нужно сделать пользователю:
-1. Скомпилировать с `mvn clean package` (нужен Java 17+ и Maven)
-2. Полученный `.jar` из `plugin/target/` или `core/target/` заменить в `/plugins/`
-3. Папки `/plugins/HolographicDisplays/` с голограммами и конфигами не трогать — плагин их сохранит
 
-## Проблема среды:
-В текущем sandbox нет `javac`, `mvn` и доступа к репозиториям Debian (apt не работает).
-Поэтому `.jar` скомпилировать здесь невозможно — предоставлен готовый исходник с оптимизациями.
+Сборка уже выполнена — готовый `.jar` лежит в `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar`
+(и продублирован в `extracted/HolographicDisplays-master/plugin/target/`). Подробности: `READY-PLUGIN-INFO.md`.
+
+Пересобрать после своих правок:
+
+```
+mvn clean package -Dmaven.test.skip=true -Dcheckstyle.skip=true -Dplaceholderapi.version=2.12.3
+```
+
+или просто запушить изменения в `extracted/**` — workflow `Build HolographicDisplays` соберёт `.jar`
+на GitHub Actions и закоммитит его обратно в `dist/`.
+
+## Среда сборки
+
+Собрать в песочнице Arena было нельзя: нет `javac`, нет `mvn`, а `repo.maven.apache.org`,
+`hub.spigotmc.org`, `repo.codemc.io`, `repo.extendedclip.com` недоступны (egress-политика).
+Поэтому сборка вынесена в GitHub Actions этого репозитория (`.github/workflows/build-holographicdisplays.yml`,
+скрипты `ci/build.sh` и `ci/collect.sh`).
+
+## Дополнительно исправлено при сборке
+
+- `pom.xml`: `me.clip:placeholderapi:2.8.1` больше не публикуется ни в одном репозитории → версия
+  вынесена в свойство `${placeholderapi.version}` (по умолчанию 2.11.2, CI подбирает актуальную
+  из живых репозиториев и передаёт через `-D`) + wildcard-исключение транзитивных зависимостей.
+  На рантайм не влияет: PAPI — `provided`, в `.jar` не упаковывается.
