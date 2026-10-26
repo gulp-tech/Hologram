@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <suppress
+            checks="Header"
+            files="[\\/]me[\\/]filoghost[\\/]holographicdisplays[\\/]plugin[\\/]lib[\\/].+\.java"/>
+    <suppress
+            checks="EqualsHashCode"
+            files="[\\/]me[\\/]filoghost[\\/]holographicdisplays[\\/]plugin[\\/]lib[\\/]nbt[\\/].+\.java"/>
+    <suppress
+            checks="IllegalImport"
+            files="[\\/]me[\\/]filoghost[\\/]holographicdisplays[\\/]nms[\\/](v1_9_R2|v1_10_R1)[\\/].+\.java"/>
+    <suppress
+            checks="SummaryJavadoc"
+            files="[\\/]com[\\/]gmail[\\/]filoghost[\\/](holograms|holographicdisplays)[\\/]api[\\/].+\.java"/>
+</suppressions>

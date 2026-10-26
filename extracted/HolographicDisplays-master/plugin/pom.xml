@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>me.filoghost.holographicdisplays</groupId>
+        <artifactId>holographicdisplays-parent</artifactId>
+        <version>3.0.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>holographicdisplays-plugin</artifactId>
+    <name>HolographicDisplays Plugin</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>holographicdisplays-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>holographicdisplays-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit-lite</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>me.filoghost.updatechecker</groupId>
+            <artifactId>updatechecker</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>me.filoghost.fcommons</groupId>
+            <artifactId>fcommons</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>..</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                    <include>THIRD-PARTY.txt</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <!-- Appends build number to plugin version on SNAPSHOT builds. -->
+                    <execution>
+                        <id>set-plugin-version</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>bsh-property</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>pluginVersion</property>
+                            </properties>
+                            <source>
+                                projectVersion = project.version;
+                                buildNumber = System.getenv("BUILD_NUMBER");
+
+                                String pluginVersion;
+                                if (buildNumber != null @and projectVersion.contains("SNAPSHOT")) {
+                                    pluginVersion = projectVersion + "-b" + buildNumber;
+                                } else {
+                                    pluginVersion = projectVersion;
+                                }
+
+                                print("Project version: " + projectVersion);
+                                print("Build number: " + buildNumber);
+                                print("Computed plugin version: " + pluginVersion);
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Version>${pluginVersion}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <artifactSet>
+                        <includes>
+                            <include>${project.groupId}:*</include>
+                            <include>org.bstats</include>
+                            <include>me.filoghost.updatechecker</include>
+                            <include>me.filoghost.fcommons</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/maven/</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats.bukkit</pattern>
+                            <shadedPattern>me.filoghost.holographicdisplays.plugin.lib.metrics</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.filoghost.updatechecker</pattern>
+                            <shadedPattern>me.filoghost.holographicdisplays.plugin.lib.updater</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.filoghost.fcommons</pattern>
+                            <shadedPattern>me.filoghost.holographicdisplays.plugin.lib.fcommons</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
