@@ -54,6 +54,11 @@ fi
   echo "build: $GITHUB_REPOSITORY@${GITHUB_SHA:-} run:$GITHUB_RUN_ID attempt:$GITHUB_RUN_ATTEMPT"
   echo "maven exit code: $status"
   echo
+  if [ -f /tmp/hd-console.log ]; then
+    echo "----- ci/build.sh console -----"
+    cat /tmp/hd-console.log
+    echo
+  fi
   if [ -f "$LOG" ]; then
     echo "----- maven log -----"
     cat "$LOG"

@@ -8,7 +8,9 @@ PROJ_DIR="${PROJ_DIR:-extracted/HolographicDisplays-master}"
 GOALS="${MAVEN_GOALS:-clean package}"
 EXTRA_ARGS="${MAVEN_ARGS:--Dmaven.test.skip=true -Dcheckstyle.skip=true}"
 LOG=/tmp/mvn.log
+CONSOLE=/tmp/hd-console.log
 OUT=/tmp/hd-out
+exec > >(tee -a "$CONSOLE") 2>&1
 mkdir -p "$OUT"
 : > "$OUT/status"
 
@@ -40,6 +42,58 @@ if [ -d "$PROJ_DIR" ]; then
   ( cd "$PROJ_DIR" && ls -1 && echo "-- modules --" && grep -h "<module>" pom.xml | tr -d ' \t' )
 else
   echo "!! $PROJ_DIR not found (cwd: $(pwd))"; ls -1
+fi
+
+echo
+echo "=== resolving a downloadable me.clip:placeholderapi version ==="
+PAPI_PICK=""
+PAPI_REPO=""
+for base in \
+  "https://repo1.maven.org/maven2" \
+  "https://repo.extendedclip.com/content/repositories/placeholderapi" \
+  "https://repo.helpch.at/releases" \
+  "https://repo.opencollab.dev/maven-releases" \
+  "https://repo.codemc.io/repository/maven-public"
+do
+  meta=$(curl -sf -m 30 "$base/me/clip/placeholderapi/maven-metadata.xml" 2>/dev/null || true)
+  if [ -z "$meta" ]; then
+    echo "  no metadata: $base"
+    continue
+  fi
+  vers=$(printf '%s' "$meta" | tr '>' '>\n' | sed -n 's|.*<version>\(.*\)|\1|p')
+  echo "  $(printf '%s' "$vers" | tr '\n' ' ' | tail -c 220) <= $base"
+  cand=$(printf '%s\n' "$vers" | grep -E '^2\.1[0-9]\.[0-9]+$' | sort -V | tail -n 1)
+  [ -z "$cand" ] && cand=$(printf '%s\n' "$vers" | grep -E '^2\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+  if [ -n "$cand" ] && curl -sf -m 30 -o /dev/null "$base/me/clip/placeholderapi/$cand/placeholderapi-$cand.jar"; then
+    PAPI_PICK="$cand"
+    PAPI_REPO="$base"
+    break
+  fi
+done
+if [ -n "$PAPI_PICK" ]; then
+  echo "  using placeholderapi $PAPI_PICK from $PAPI_REPO"
+  EXTRA_ARGS="$EXTRA_ARGS -Dplaceholderapi.version=$PAPI_PICK"
+  mkdir -p "$HOME/.m2"
+  cat > "$HOME/.m2/settings.xml" <<XML
+<settings>
+  <profiles>
+    <profile>
+      <id>hd-ci</id>
+      <activation><activeByDefault>true</activeByDefault></activation>
+      <repositories>
+        <repository>
+          <id>hd-papi</id>
+          <url>$PAPI_REPO</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+</settings>
+XML
+else
+  echo "  !! no downloadable placeholderapi found; relying on the pom default"
 fi
 
 echo
