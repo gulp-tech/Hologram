@@ -55,16 +55,16 @@ for base in \
   "https://repo.opencollab.dev/maven-releases" \
   "https://repo.codemc.io/repository/maven-public"
 do
-  meta=$(curl -sf -m 30 "$base/me/clip/placeholderapi/maven-metadata.xml" 2>/dev/null || true)
+  meta=$(curl -sfL -m 30 "$base/me/clip/placeholderapi/maven-metadata.xml" 2>/dev/null || true)
   if [ -z "$meta" ]; then
     echo "  no metadata: $base"
     continue
   fi
-  vers=$(printf '%s' "$meta" | tr '>' '>\n' | sed -n 's|.*<version>\(.*\)|\1|p')
-  echo "  $(printf '%s' "$vers" | tr '\n' ' ' | tail -c 220) <= $base"
+  vers=$(printf '%s' "$meta" | grep -oE '<version>[^<]+</version>' | sed -e 's|</\?version>||g')
+  echo "  [$(printf '%s' "$vers" | tr '\n' ' ')] <= $base"
   cand=$(printf '%s\n' "$vers" | grep -E '^2\.1[0-9]\.[0-9]+$' | sort -V | tail -n 1)
   [ -z "$cand" ] && cand=$(printf '%s\n' "$vers" | grep -E '^2\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
-  if [ -n "$cand" ] && curl -sf -m 30 -o /dev/null "$base/me/clip/placeholderapi/$cand/placeholderapi-$cand.jar"; then
+  if [ -n "$cand" ] && curl -sfL -m 40 -o /dev/null "$base/me/clip/placeholderapi/$cand/placeholderapi-$cand.jar"; then
     PAPI_PICK="$cand"
     PAPI_REPO="$base"
     break
@@ -110,8 +110,9 @@ awk '/Reactor Summary/,/BUILD (SUCCESS|FAILURE)/' "$LOG" | sed 's/^\[INFO\] //' 
 echo "--- tail ---"
 tail -n 25 "$LOG"
 
-if [ "$rc" -eq 0 ]; then
+if true; then
   # The plugin module is shaded into plugin/target/<artifactId>-<version>.jar
+  # (collected even on a non-zero exit, so a partial build is still inspectable)
   found=$(ls -1 plugin/target/*.jar 2>/dev/null | grep -v 'original-\|-sources\|-javadoc' | head -n 1)
   if [ -z "$found" ]; then
     found=$(find . -path '*/target/*.jar' ! -name 'original-*' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)
