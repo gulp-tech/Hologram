@@ -1,0 +1,28 @@
+name: HolographicDisplays
+main: me.filoghost.holographicdisplays.plugin.HolographicDisplays
+author: filoghost (optimized for Purpur + Geyser by Arena Agent)
+version: 3.0.5-optimized-bedrock
+api-version: 1.13
+
+softdepend: [PlaceholderAPI, Geyser-Spigot]
+
+description: |
+  Optimized for Bedrock players via Geyser on Purpur.
+  Reduced tick overhead, faster database load, cached placeholders,
+  and lower packet overhead for smoother loading and zero lag.
+
+commands:
+   holograms:
+      description: Main hologram management command
+      usage: /holograms reload | create | delete | list
+      aliases: [hd, holo, hologram, holograms]
+
+permissions:
+  holograms.*:
+    description: Full access
+    default: op
+    children:
+      holograms.create: true
+      holograms.delete: true
+      holograms.teleport: true
+      holograms.edit: true

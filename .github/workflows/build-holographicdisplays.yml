@@ -1,0 +1,187 @@
+name: Build HolographicDisplays (optimized)
+
+# Compiles extracted/HolographicDisplays-master with Maven and puts the
+# resulting plugin .jar (plus the build log) back into the branch under build/.
+# The Arena sandbox this project is edited in has no JDK/Maven and no egress to
+# Maven Central / hub.spigotmc.org / repo.codemc.io, so the build runs here.
+
+on:
+  workflow_dispatch:
+    inputs:
+      goals:
+        description: "Maven goals"
+        required: false
+        default: "clean package"
+      extra_args:
+        description: "Extra Maven args"
+        required: false
+        default: "-Dmaven.test.skip=true -Dcheckstyle.skip=true"
+  push:
+    branches:
+      - "arena/**"
+    paths:
+      - "extracted/**"
+      - ".github/workflows/build-holographicdisplays.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hd-build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: mvn clean package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      PROJ_DIR: extracted/HolographicDisplays-master
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      - name: Set up JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Make sure Maven is available
+        run: |
+          if ! command -v mvn >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq maven
+          fi
+          mvn -version | tee -a "$GITHUB_STEP_SUMMARY"
+          java -version 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Probe upstream artifact repositories
+        run: |
+          echo '### Repository probe' >> "$GITHUB_STEP_SUMMARY"
+          for u in \
+            "https://repo1.maven.org/maven2/org/apache/maven/maven-core/3.9.9/maven-core-3.9.9.pom" \
+            "https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/1.8-R0.1-SNAPSHOT/maven-metadata.xml" \
+            "https://repo.codemc.io/repository/maven-public/me/filoghost/fcommons/fcommons/1.2.8-SNAPSHOT/maven-metadata.xml" \
+            "https://repo.codemc.io/repository/nms/org/spigotmc/spigot/1.20.4-R0.1-SNAPSHOT/maven-metadata.xml" \
+            "https://repo.extendedclip.com/content/repositories/placeholderapi/me/clip/placeholderapi/2.8.1/placeholderapi-2.8.1.pom"
+          do
+            code=$(curl -s -m 25 -o /dev/null -w '%{http_code}' "$u" || echo ERR)
+            echo "- \`$code\` $u" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Cache ~/.m2/repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles(format('{0}/**/pom.xml', env.PROJ_DIR)) }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Build
+        id: build
+        run: |
+          GOALS="${{ inputs.goals }}"
+          [ -z "$GOALS" ] && GOALS="clean package"
+          ARGS="${{ inputs.extra_args }}"
+          [ -z "$ARGS" ] && ARGS="-Dmaven.test.skip=true -Dcheckstyle.skip=true"
+          {
+            echo "### Maven invocation"
+            echo '```'
+            echo "mvn -B -ntp $GOALS $ARGS"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          cd "$PROJ_DIR"
+          set +e
+          mvn -B -ntp $GOALS $ARGS > /tmp/mvn.log 2>&1
+          rc=$?
+          set -e
+          echo "Maven exit code: $rc" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          tail -n 60 /tmp/mvn.log
+          if [ "$rc" -ne 0 ]; then
+            {
+              echo "<details><summary>Maven log (errors)</summary>"
+              echo '```'
+              grep -nE "^\[ERROR\]|^\[WARNING\].*missing|FATAL" /tmp/mvn.log | head -n 80
+              echo '```'
+              echo "</details>"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit "$rc"
+          fi
+
+      - name: Collect build outputs
+        if: always()
+        run: |
+          set -e
+          mkdir -p /tmp/out
+          {
+            echo "### Modules"
+            echo '```'
+            grep -E "^\[INFO\] HolographicDisplays|^\[INFO\] BUILD|Reactor Summary" -A2 /tmp/mvn.log 2>/dev/null | tail -n 60 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          found=$(find "$PROJ_DIR" -path "*/target/*.jar" -name "HolographicDisplays*.jar" | sort | head -n 1 || true)
+          if [ -n "$found" ]; then
+            cp "$found" /tmp/out/
+            jarname=$(basename "$found")
+            echo "- artifact: \`$jarname\`" >> "$GITHUB_STEP_SUMMARY"
+            sha256sum "/tmp/out/$jarname" | tee -a "$GITHUB_STEP_SUMMARY"
+            {
+              echo "### .jar contents (summary)"
+              echo '```'
+              unzip -l "/tmp/out/$jarname" | tail -n 25
+              echo "entries: $(unzip -l "/tmp/out/$jarname" | tail -n 2 | head -n 1)"
+              echo '```'
+              echo '### plugin.yml inside the .jar'
+              echo '```yaml'
+              unzip -p "/tmp/out/$jarname" plugin.yml
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- no .jar produced" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          {
+            echo "commit: ${GITHUB_SHA}"
+            echo "run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "maven exit code: ${{ steps.build.outputs.exit_code }}"
+            echo
+            echo "----- full maven log -----"
+            cat /tmp/mvn.log 2>/dev/null || echo "(no log)"
+          } > /tmp/out/BUILD-LOG.txt
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HolographicDisplays-optimized-bedrock
+          path: /tmp/out/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Push .jar back to the branch (build/)
+        if: always()
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BR="$GITHUB_REF_NAME"
+          git fetch -q origin "$BR"
+          git checkout -q -B ci-collect "origin/$BR"
+          mkdir -p build
+          cp -f /tmp/out/* build/ 2>/dev/null || true
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -f build
+            msg="ci: HolographicDisplays build (${{ steps.build.outputs.exit_code == '0' && 'ok' || 'FAILED' }) $(sha256sum /tmp/out/*.jar 2>/dev/null | cut -c1-12 || echo nojar)"
+            git commit -q -m "$msg"
+            git push -q origin "HEAD:refs/heads/$BR"
+            echo "Pushed to \`$BR\` under \`build/\`" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Nothing to push (no changes)" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
