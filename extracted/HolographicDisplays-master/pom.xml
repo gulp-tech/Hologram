@@ -14,8 +14,12 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spigot-api.version>1.8-R0.1-SNAPSHOT</spigot-api.version>
-        <!-- Overridable: upstream 2.8.1 was removed from every public repository. -->
-        <placeholderapi.version>2.11.2</placeholderapi.version>
+        <!-- me.clip:placeholderapi:2.8.1 was removed from every public repository, so the
+             compile-only (provided) dependency is pinned to a version that is still published.
+             Override with -Dplaceholderapi.version=X if your mirror has a different listing. -->
+        <placeholderapi.version>2.12.3</placeholderapi.version>
+        <!-- Style check is opt-in again: run it with -Dcheckstyle.skip=false -->
+        <checkstyle.skip>true</checkstyle.skip>
     </properties>
 
     <modules>

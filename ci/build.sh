@@ -6,7 +6,7 @@ set -uo pipefail
 
 PROJ_DIR="${PROJ_DIR:-extracted/HolographicDisplays-master}"
 GOALS="${MAVEN_GOALS:-clean package}"
-EXTRA_ARGS="${MAVEN_ARGS:--Dmaven.test.skip=true -Dcheckstyle.skip=true}"
+EXTRA_ARGS="${MAVEN_ARGS:--DskipTests}"
 LOG=/tmp/mvn.log
 CONSOLE=/tmp/hd-console.log
 OUT=/tmp/hd-out
