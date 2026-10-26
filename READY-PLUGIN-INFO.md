@@ -7,6 +7,14 @@
 
 ## Где лежит готовый .jar
 
+**Одним архивом** (готовый `.jar` + полный проект + скрипт пересборки):
+`HolographicDisplays-3.0.5-optimized-bedrock-build.zip` — 1 398 430 B, 873 файла,
+sha256 `e07d6d4a0d3491a10c83e3a4d05ae30e07b03bf1e113e80805991f9295a5ede5`.
+Внутри: `dist/*.jar`, `dist/BUILD-LOG.txt`, `project/` (весь Maven-проект без `target/`),
+`build.sh` (сам выберет `mvn` или Docker) и `BUILD-HERE.md`.
+
+## Где лежит готовый .jar
+
 | Файл | Путь |
 |---|---|
 | **Плагин для сервера** | `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
@@ -23,11 +31,9 @@
 `hub.spigotmc.org`, `repo.codemc.io` — всё режется egress-политикой), а на GitHub Actions этого же
 репозитория: `.github/workflows/build-holographicdisplays.yml` → `ci/build.sh` → `ci/collect.sh`.
 
-Там же, в CI, выполняется команда:
-
-```
-mvn clean package -Dmaven.test.skip=true -Dcheckstyle.skip=true -Dplaceholderapi.version=2.12.3
-```
+Команда в CI — ровно та, что нужна вам: `mvn clean package -DskipTests`
+(проверена на сборке `538f7e1`: BUILD SUCCESS, а `.jar` получился байт-в-байт тот же,
+что и с флагами — сборка воспроизводимая).
 
 Итог реактора: **BUILD SUCCESS**, все 31 модуль (common, api, legacy-api v1/v2, nms-common + 18 версионных
 NMS-модулей, core, plugin, 2 примера). Готовый `.jar` и лог сборки workflow коммитит обратно в ветку в каталог `dist/`.
