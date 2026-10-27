@@ -8,8 +8,8 @@
 ## Где лежит готовый .jar
 
 **Одним архивом** (готовый `.jar` + полный проект + скрипт пересборки):
-`HolographicDisplays-3.0.5-optimized-bedrock-build.zip` — 1 398 430 B, 873 файла,
-sha256 `e07d6d4a0d3491a10c83e3a4d05ae30e07b03bf1e113e80805991f9295a5ede5`.
+`HolographicDisplays-3.0.5-optimized-bedrock-build.zip` — 1 437 967 B, 878 файлов,
+sha256 `f3e9ef2be1b3bc777f580d5d73118a0aea1aea0a0bd51cb4678b76b74b4a8177`.
 Внутри: `dist/*.jar`, `dist/BUILD-LOG.txt`, `project/` (весь Maven-проект без `target/`),
 `build.sh` (сам выберет `mvn` или Docker) и `BUILD-HERE.md`.
 
@@ -21,8 +21,9 @@ sha256 `e07d6d4a0d3491a10c83e3a4d05ae30e07b03bf1e113e80805991f9295a5ede5`.
 | Тот же файл, по «ожидаемому» пути сборки | `extracted/HolographicDisplays-master/plugin/target/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
 | Полный лог сборки (Maven, 31 модуль) | `dist/BUILD-LOG.txt` |
 
-- размер: **934 596 байт** (≈ 0,9 MiB), 801 запись, 703 `.class`
-- sha256: `7a1e99d3f14fb4a84c845a3245d414bb53770ce565afd30ca0e445d5616cd029`
+- размер: **961 921 байт** (≈ 0,92 MiB), 828 записей, `.jar` от 2026-10-27 (сборка `1f58b9a`, уже с Bedrock FPS Guard)
+- sha256: `cdff07b9bbe7c89c8d010d2ec97982144763c54116f3da98be5b0c5716f9a62b`
+- предыдущая сборка (без guard'а): `7a1e99d3f14fb4a84c845a3245d414bb53770ce565afd30ca0e445d5616cd029`, 934 596 B
 - CRC-тест архива: `No errors detected`
 
 ## Как собран
@@ -40,6 +41,32 @@ NMS-модулей, core, plugin, 2 примера). Готовый `.jar` и л
 
 Запустить пересборку: `gh run rerun <ID>` или вкладка Actions → «Build HolographicDisplays» → Run workflow
 (сработает и на обычный `git push` с изменениями в `extracted/**` или `ci/**`).
+
+## ⚡ Bedrock FPS Guard (главное отличие этой сборки)
+
+Проблема: HD рисует каждую строку голограммы отдельным `ARMOR_STAND` (в 1.20.4 тоже,
+`VersionTextNMSPacketEntity:25`), Geyser транслирует каждый объект Bedrock-клиенту → на телефонах
+просадка FPS, а пачка spawn-пакетов на входе ломает сам коннект.
+
+Добавлен `plugin/.../bedrock/` (ядро и NMS не тронуты, кроме одного additive-геттера
+`HolographicDisplaysCore.getRegisteredHolograms()`):
+
+| Класс | Что делает |
+|---|---|
+| `BedrockGuard` | бюджет строк на игрока, радиус, отложенная/порционная выдача, снятие оверрайдов на quit/reload/disable |
+| `BedrockPlayerDetector` | определяет Bedrock-игроков рефлексией: Floodgate API → Geyser API → префикс имени (новые зависимости не нужны) |
+| `BedrockGuardConfig` | значения из `config.yml`, можно править на лету командой |
+| `BedrockGuardCommand` | `/holograms bedrockguard status|on|off|debug|everyone|radius|budget|pace|show` |
+
+Алгоритм (каждый тик, стоимость не зависит от числа игроков): для Bedrock-игрока берутся
+ближайшие голограммы в радиусе `view-range`, пока их строки влезут в `max-visible-lines`;
+остальные получают `VisibilitySettings.setIndividualVisibility(player, HIDDEN)` — то есть ядро
+просто не отправляет им ни пакетов, ни обновлений плейсхолдеров. Изменения применяются пачками по
+`max-lines-per-tick`, а после входа проходит `join-settle-ticks` прежде чем что-то начнёт
+появляться. Есть гистерезис 0.85 (чтобы голограммы не мигали на границе радиуса) и
+`rescan-interval-ticks` как страховка.
+
+Ключи `config.yml` — в `BUILD-HERE.md`. Статус/диагностика: `/holograms bedrockguard status`.
 
 ## Отличие от «чистого» апстрима
 

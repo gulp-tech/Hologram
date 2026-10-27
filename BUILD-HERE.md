@@ -5,9 +5,34 @@
 ```
 dist/HolographicDisplays-3.0.5-optimized-bedrock.jar   ← уже собранный плагин, можно сразу класть в /plugins/
 dist/BUILD-LOG.txt                                      ← лог той сборки (все 31 модуль: BUILD SUCCESS)
-project/                                                ← полный Maven-проект с оптимизациями
+project/                                                ← полный Maven-проект
 build.sh                                                ← скрипт пересборки одной командой
 ```
+
+## ⚡ В этой сборке есть Bedrock FPS Guard
+
+Каждая строка голограммы = отдельный `ARMOR_STAND`, и Geyser обязан транслировать каждый
+такой объект каждому Bedrock-клиенту. На телефонах это роняет FPS, а всплеск пакетов при
+входе — причина «не могу зайти». Guard даёт каждому Bedrock-игроку жёсткий бюджет строк и
+радиус, а пакеты раздаёт порциями. Настраивается в `plugins/HolographicDisplays/config.yml`:
+
+```yaml
+bedrock-guard:
+  enabled: true
+  view-range: 16              # блоки для Bedrock-игроков (глобальный holograms-view-range = 48)
+  max-visible-lines: 12       # ЖЁСТКИЙ потолок сущностей-голограмм на игрока
+  max-lines-per-tick: 6       # темп выдачи/снятия: 6 строк за тик
+  join-settle-ticks: 20       # 1 секунду после входа не показываем ничего
+  detection: auto             # auto | floodgate | geyser | prefix | everyone | none
+  bypass-permission: holographicdisplays.bedrockguard.bypass
+  debug: false
+```
+
+Горячая подстройка прямо на сервере: `/holograms bedrockguard status|budget 20|radius 24|pace 10|debug|everyone|off`.
+`everyone` полезен для теста: все игроки считаются Bedrock, эффект видно даже с ПК.
+
+Java-игроков guard не трогает вообще: он только ставит/снимает individual-видимость через штатный API.
+
 
 ## Вариант 1 — не собирать ничего
 

@@ -6,6 +6,14 @@
 - Уменьшена нагрузка при загрузке: убран лишний цикл, добавлен размер коллекции
 - Добавлены комментарии для дальнейшей оптимизации
 
+## Что сделано во втором проходе (реальная optimization под Bedrock)
+
+Добавлен Bedrock FPS Guard: `plugin/src/main/java/me/filoghost/holographicdisplays/plugin/bedrock/`.
+Смысл: ограничить число сущностей-голограмм на одного Bedrock-игрока (1 строка = 1 armor stand,
+который Geyser должен транслировать клиенту) и разнести по тикам всплеск spawn/destroy-пакетов
+при входе. Ключи config.yml и команда `/holograms bedrockguard ...` описаны в `BUILD-HERE.md`
+и `READY-PLUGIN-INFO.md`. Ядро (core/NMS) не изменено, кроме additive-геттера списка голограмм.
+
 ## Что нужно сделать пользователю:
 
 Сборка уже выполнена — готовый `.jar` лежит в `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar`
