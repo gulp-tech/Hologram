@@ -2,29 +2,38 @@
 
 ## Что это
 
-Собранный `.jar` плагина **HolographicDisplays 3.0.5-optimized-bedrock** — ветка `arena/b544f479-hologram`
-(исходники с оптимизациями) + полная сборка Maven.
+Собранный `.jar` плагина **HolographicDisplays 3.0.5-optimized-bedrock**: исходники ветки `arena/b544f479-hologram`
+(существующие оптимизации HD) + рендерер без NMS для 1.20.5+/Purpurbedrock + система удержания FPS на телефонах
+(Bedrock FPS Guard) + урезание фиксированной стоимости тика по профилю spark.
 
-## Где лежит готовый .jar
+## Файлы и контрольные суммы
 
-**Одним архивом** (готовый `.jar` + полный проект + скрипт пересборки):
-`HolographicDisplays-3.0.5-optimized-bedrock-build.zip` — 1 437 967 B, 878 файлов,
-sha256 `f3e9ef2be1b3bc777f580d5d73118a0aea1aea0a0bd51cb4678b76b74b4a8177`.
-Внутри: `dist/*.jar`, `dist/BUILD-LOG.txt`, `project/` (весь Maven-проект без `target/`),
-`build.sh` (сам выберет `mvn` или Docker) и `BUILD-HERE.md`.
+| Файл | Размер | Что внутри |
+|---|---|---|
+| `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` | 996 465 B | сам плагин — класть в `plugins/` |
+| `HolographicDisplays-3.0.5-optimized-bedrock-build.zip` | см. `SHA256SUMS.txt` | готовый `.jar` + полный Maven-проект + `build.sh` + `BUILD-HERE.md` + лог сборки |
+| `SHA256SUMS.txt` | — | sha256 обоих файлов выше |
+| `dist/BUILD-LOG.txt` | 767 805 B | полный лог `mvn clean package -DskipTests` (32 модуля, BUILD SUCCESS) |
 
-## Где лежит готовый .jar
+sha256 jar: `a8149d759a517fd7c1050c30b5b99776c675500de5c5484c032214d53bddf2c0`
 
-| Файл | Путь |
-|---|---|
-| **Плагин для сервера** | `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
-| Тот же файл, по «ожидаемому» пути сборки | `extracted/HolographicDisplays-master/plugin/target/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
-| Полный лог сборки (Maven, 31 модуль) | `dist/BUILD-LOG.txt` |
+Скачать (работает без авторизации, это публичный репозиторий):
 
-- размер: **996 465 байт** (≈ 0,95 MiB), сборка от 2026-10-27 19:39 UTC: рендерер без NMS + урезание тика по профилю spark
-- sha256: `a8149d759a517fd7c1050c30b5b99776c675500de5c5484c032214d53bddf2c0`
-- предыдущая сборка (без guard'а): `7a1e99d3f14fb4a84c845a3245d414bb53770ce565afd30ca0e445d5616cd029`, 934 596 B
-- CRC-тест архива: `No errors detected`
+```
+https://github.com/gulp-tech/Hologram/raw/refs/heads/arena/3e48db95-hologram/dist/HolographicDisplays-3.0.5-optimized-bedrock.jar
+https://github.com/gulp-tech/Hologram/raw/refs/heads/arena/3e48db95-hologram/HolographicDisplays-3.0.5-optimized-bedrock-build.zip
+```
+
+Зафиксированная копия той же сборки (этот коммит содержит ровно тот же `.jar`, что и сверху):
+
+```
+https://github.com/gulp-tech/Hologram/raw/1f87ec99aef1c55017f91a7295ef533bfcef027d/dist/HolographicDisplays-3.0.5-optimized-bedrock.jar
+```
+
+Контрольные суммы: `https://github.com/gulp-tech/Hologram/raw/refs/heads/arena/3e48db95-hologram/SHA256SUMS.txt`
+
+В архиве `.zip`: `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar`, `dist/BUILD-LOG.txt`,
+`HolographicDisplays/` (весь Maven-проект без `target/`), `BUILD-HERE.md`, `READY-PLUGIN-INFO.md`, `build.sh`.
 
 ## Как собран
 
