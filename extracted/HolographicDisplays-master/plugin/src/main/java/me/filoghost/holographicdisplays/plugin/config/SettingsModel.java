@@ -24,6 +24,24 @@ public class SettingsModel implements MappedConfig {
     @Path("quick-edit-commands")
     boolean quickEditCommands = true;
 
+    /*
+     * How holograms are drawn.
+     * "auto" - protocol packets on the versions this plugin knows (1.8.4 - 1.20.4), real entities on any other
+     *          version instead of refusing to start.
+     * "display" - always real entities (invisible armor stands for text, items for item lines), no NMS at all,
+     *             so it also works on new/unknown server versions. Clicks need Minecraft 1.19+.
+     * "packets" - old behavior, the plugin won't start on unsupported versions.
+     */
+    @Path("renderer")
+    String renderer = "auto";
+
+    /*
+     * Vertical offset (in blocks) of the entity which carries a text line in "display" mode.
+     * The default matches the packet renderer, change it only if the text looks misaligned.
+     */
+    @Path("display.text-y-offset")
+    double displayTextYOffset = -0.29;
+
     @Path("placeholders.PlaceholderAPI.enabled")
     boolean placeholderAPIEnabled = true;
 

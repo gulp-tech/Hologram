@@ -9,6 +9,7 @@ package me.filoghost.holographicdisplays.plugin.config;
 import me.filoghost.fcommons.Strings;
 import me.filoghost.fcommons.logging.ErrorCollector;
 import me.filoghost.holographicdisplays.common.DebugLogger;
+import me.filoghost.holographicdisplays.core.CoreGlobalConfig;
 import me.filoghost.holographicdisplays.plugin.bedrock.BedrockGuardConfig;
 import me.filoghost.holographicdisplays.plugin.bedrock.BedrockPlayerDetector;
 import me.filoghost.holographicdisplays.plugin.format.DisplayFormat;
@@ -44,12 +45,19 @@ public class Settings {
     public static boolean pingerTrimMotd;
     public static Map<String, ServerAddress> pingerServerAddresses;
 
+    public static String rendererPreference;
+    public static double displayTextYOffset;
+
     /** Mutated in place, the Bedrock guard keeps a reference to it. */
     public static final BedrockGuardConfig bedrockGuard = new BedrockGuardConfig();
 
     public static void load(SettingsModel config, ErrorCollector errorCollector) {
         spaceBetweenLines = config.spaceBetweenLines;
         viewRange = config.viewRange;
+        rendererPreference = config.renderer != null ? config.renderer.trim().toLowerCase(java.util.Locale.ROOT) : "auto";
+        displayTextYOffset = config.displayTextYOffset;
+        CoreGlobalConfig.rendererPreference = rendererPreference;
+        CoreGlobalConfig.displayTextYOffset = displayTextYOffset;
         quickEditCommands = config.quickEditCommands;
         timeFormat = parseTimeFormatter(config.timeFormat, config.timeZone, errorCollector);
         updateNotification = config.updateNotification;

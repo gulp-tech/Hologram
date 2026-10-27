@@ -11,6 +11,7 @@ import me.filoghost.fcommons.logging.ErrorCollector;
 import me.filoghost.fcommons.logging.Log;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.Position;
+import me.filoghost.holographicdisplays.core.CoreGlobalConfig;
 import me.filoghost.holographicdisplays.core.HolographicDisplaysCore;
 import me.filoghost.holographicdisplays.plugin.bedrock.BedrockGuard;
 import me.filoghost.holographicdisplays.plugin.bridge.bungeecord.BungeeServerTracker;
@@ -78,9 +79,16 @@ public class HolographicDisplays extends FCommonsPlugin {
 
         PrintableErrorCollector errorCollector = new PrintableErrorCollector();
 
+        // The renderer has to be chosen before the core starts, so read it straight from the file
+        CoreGlobalConfig.rendererPreference = readRendererPreference();
+
         core = new HolographicDisplaysCore();
         core.enable(this, errorCollector);
         api = HolographicDisplaysAPI.get(this);
+        Log.info("Renderer: " + core.getRendererName()
+                         + ("display".equals(core.getRendererName())
+                                    ? " (real entities, no version-specific code)"
+                                    : " (version-specific protocol packets)"));
 
         configManager = new ConfigManager(getDataFolder().toPath());
         bungeeServerTracker = new BungeeServerTracker(this);
@@ -130,6 +138,23 @@ public class HolographicDisplays extends FCommonsPlugin {
         }
     }
 
+    /**
+     * Reads only the 'renderer' key from config.yml, since the renderer must be known before the core is enabled.
+     */
+    private String readRendererPreference() {
+        java.io.File configFile = new java.io.File(getDataFolder(), "config.yml");
+        if (!configFile.isFile()) {
+            return "auto";
+        }
+        try {
+            return org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(configFile)
+                    .getString("renderer", "auto").trim().toLowerCase(java.util.Locale.ROOT);
+        } catch (Throwable t) {
+            Log.warning("Can't read 'renderer' from config.yml, using 'auto'", t);
+            return "auto";
+        }
+    }
+
     public void load(ErrorCollector errorCollector) {
         internalHologramManager.deleteHolograms();
 
@@ -141,6 +166,11 @@ public class HolographicDisplays extends FCommonsPlugin {
 
         if (bedrockGuard != null) {
             bedrockGuard.onConfigurationReload();
+        }
+
+        if (!isRendererActive(Settings.rendererPreference, core.getRendererName())) {
+            Log.warning("Changing 'renderer' requires a server restart - holograms keep using ""
+                                + core.getRendererName() + "" for now.");
         }
 
         AnimationPlaceholderFactory animationPlaceholderFactory = configManager.loadAnimations(errorCollector);
@@ -165,6 +195,13 @@ public class HolographicDisplays extends FCommonsPlugin {
     }
 
     @Override
+    private static boolean isRendererActive(String preference, String activeRenderer) {
+        if (preference == null || preference.isEmpty() || "auto".equals(preference)) {
+            return true; // "auto" is satisfied by whichever renderer was selected at startup
+        }
+        return preference.equals(activeRenderer);
+    }
+
     public void onDisable() {
         if (bedrockGuard != null) {
             bedrockGuard.stop();
