@@ -21,8 +21,8 @@ sha256 `f3e9ef2be1b3bc777f580d5d73118a0aea1aea0a0bd51cb4678b76b74b4a8177`.
 | Тот же файл, по «ожидаемому» пути сборки | `extracted/HolographicDisplays-master/plugin/target/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
 | Полный лог сборки (Maven, 31 модуль) | `dist/BUILD-LOG.txt` |
 
-- размер: **961 921 байт** (≈ 0,92 MiB), 813 записей, `.jar` от 2026-10-27 (сборка `1f58b9a`, уже с Bedrock FPS Guard)
-- sha256: `cdff07b9bbe7c89c8d010d2ec97982144763c54116f3da98be5b0c5716f9a62b`
+- размер: **996 465 байт** (≈ 0,95 MiB), сборка от 2026-10-27 19:39 UTC: рендерер без NMS + урезание тика по профилю spark
+- sha256: `a8149d759a517fd7c1050c30b5b99776c675500de5c5484c032214d53bddf2c0`
 - предыдущая сборка (без guard'а): `7a1e99d3f14fb4a84c845a3245d414bb53770ce565afd30ca0e445d5616cd029`, 934 596 B
 - CRC-тест архива: `No errors detected`
 
@@ -161,3 +161,9 @@ display:
 Проверка на сервере: в логе запуска должно быть
 `[HolographicDisplays] Renderer: display (real entities, no version-specific code)`,
 и `[Display renderer] Removed N leftover hologram entities...`, если остатки были.
+
+### Урезано по профилю spark (сборка `renderer: auto`, 2026-10-27)
+Клик-очередь больше не итерируется впустую каждый тик, чистка плейсхолдеров (`TickExpiringMap`) стала итератором
+без лямбд и запускается раз в 5 тиков, тик ядра имеет быстрый путь при отсутствии голограмм, а Bedrock FPS Guard
+читает координаты игрока и список голограмм один раз на тик вместо двух. Подробности — в
+`optimized/OPTIMIZATION-NOTES.md`.

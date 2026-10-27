@@ -129,3 +129,9 @@ display:
 Проверка на сервере: в логе запуска должно быть
 `[HolographicDisplays] Renderer: display (real entities, no version-specific code)`,
 и `[Display renderer] Removed N leftover hologram entities...`, если остатки были.
+
+### Урезано по профилю spark (сборка `renderer: auto`, 2026-10-27)
+Клик-очередь больше не итерируется впустую каждый тик, чистка плейсхолдеров (`TickExpiringMap`) стала итератором
+без лямбд и запускается раз в 5 тиков, тик ядра имеет быстрый путь при отсутствии голограмм, а Bedrock FPS Guard
+читает координаты игрока и список голограмм один раз на тик вместо двух. Подробности — в
+`optimized/OPTIMIZATION-NOTES.md`.
