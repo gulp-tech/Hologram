@@ -23,6 +23,9 @@ public class LineClickListener implements PacketListener {
     // Use a set to avoid duplicate click events to the same line.
     private final Set<QueuedClickEvent> queuedClickEvents;
 
+    // Ticked every tick: this flag avoids touching the set at all when there is nothing to process
+    private volatile boolean hasQueuedEvents;
+
     public LineClickListener() {
         lineTrackerByEntityID = new ConcurrentHashMap<>();
         queuedClickEvents = Collections.newSetFromMap(new ConcurrentHashMap<>());

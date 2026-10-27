@@ -46,6 +46,10 @@ public class LineTrackerManager {
         }
     }
 
+    public boolean isEmpty() {
+        return lineTrackers.isEmpty();
+    }
+
     public void update(List<CachedPlayer> onlinePlayers, List<CachedPlayer> movedPlayers, int maxViewRange) {
         Iterator<LineTracker<?>> iterator = lineTrackers.iterator();
         while (iterator.hasNext()) {

@@ -20,6 +20,8 @@ import java.util.List;
 
 public class TickingTask implements Runnable {
 
+    private static final int PLACEHOLDER_CLEANUP_INTERVAL_TICKS = 5;
+
     private final TickClock tickClock;
     private final ActivePlaceholderTracker placeholderTracker;
     private final LineTrackerManager lineTrackerManager;
@@ -85,6 +87,14 @@ public class TickingTask implements Runnable {
         // Remove outdated entries before using them from line trackers
         placeholderTracker.clearOutdatedEntries();
 
+        if (lineTrackerManager.isEmpty()) {
+            // No hologram lines at all: the whole tick (view range checks, packets, location polling) is unnecessary
+            for (CachedPlayer onlinePlayer : onlinePlayers) {
+                onlinePlayer.onTick();
+            }
+            return;
+        }
+
         List<CachedPlayer> movedPlayers = new ArrayList<>();
         for (CachedPlayer onlinePlayer : onlinePlayers) {
             if (onlinePlayer.isMovedLastTick()) {
@@ -109,8 +119,11 @@ public class TickingTask implements Runnable {
             }
         }
 
-        // Remove placeholders which were not used by line trackers
-        placeholderTracker.clearInactivePlaceholders();
+        // Remove placeholders which were not used by line trackers. Entries expire after 10 ticks, so there is no
+        // need to look over all of them on every single tick.
+        if (tickClock.getCurrentTick() % PLACEHOLDER_CLEANUP_INTERVAL_TICKS == 0) {
+            placeholderTracker.clearInactivePlaceholders();
+        }
 
         // Invoke click listeners
         lineClickListener.processQueuedClickEvents();

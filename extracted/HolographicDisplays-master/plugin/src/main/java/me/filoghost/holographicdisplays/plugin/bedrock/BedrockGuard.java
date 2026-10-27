@@ -66,6 +66,8 @@ public class BedrockGuard implements Listener {
     private BukkitTask task;
     private volatile boolean started;
     private long tickCount;
+    private List<BaseHologram> hologramSnapshot;
+    private long hologramSnapshotTick = -1;
     private long totalHides;
     private long totalReveals;
     private int scanCursor;
@@ -99,6 +101,9 @@ public class BedrockGuard implements Listener {
         int budgetHolograms;
         long hidesApplied;
         long revealsApplied;
+        // Location read while deciding whether a scan is needed, reused by the scan itself on the same tick
+        Location probeLocation;
+        long probeTick;
 
         private PlayerState(Player player) {
             this.player = player;
@@ -148,10 +153,17 @@ public class BedrockGuard implements Listener {
             task = null;
         }
         releaseAll();
+        invalidateSnapshot();
     }
 
     /** Called on /holograms reload: holograms were all re-created, so the previous overrides are gone with them. */
+    private void invalidateSnapshot() {
+        hologramSnapshot = null;
+        hologramSnapshotTick = -1;
+    }
+
     public void onConfigurationReload() {
+        invalidateSnapshot(); // The holograms are being re-created, the old list must not be kept
         detector.configure(config.detection, config.namePrefix);
         if (!config.enabled) {
             releaseAll();
@@ -305,6 +317,9 @@ public class BedrockGuard implements Listener {
         // 1. Apply the queued changes for everybody: this is the only part that touches packets.
         for (int i = 0; i < scanOrder.size() && lineBudget > 0; i++) {
             PlayerState state = scanOrder.get((scanCursor + i) % scanOrder.size());
+            if (state.hideQueue.isEmpty() && state.revealQueue.isEmpty()) {
+                continue; // Nothing to send: don't enter the queue processing at all
+            }
             lineBudget -= applyQueues(state, lineBudget);
         }
 
@@ -338,6 +353,8 @@ public class BedrockGuard implements Listener {
         if (location == null || location.getWorld() == null) {
             return false;
         }
+        state.probeLocation = location;
+        state.probeTick = tickCount;
         if (!location.getWorld().getName().equals(state.lastScanWorld)) {
             return true;
         }
@@ -352,7 +369,9 @@ public class BedrockGuard implements Listener {
         if (!player.isOnline()) {
             return;
         }
-        Location location = player.getLocation();
+        // Reuse the location which needsScan() already read on this tick: reading it costs a new Location object
+        Location location = state.probeTick == tickCount ? state.probeLocation : player.getLocation();
+        state.probeLocation = null;
         if (location == null || location.getWorld() == null) {
             return;
         }
@@ -408,11 +427,23 @@ public class BedrockGuard implements Listener {
     }
 
     /**
+     * The list of registered holograms is rebuilt at most once per tick and shared by all the players scanned in
+     * that tick: the core builds a new snapshot on every call, and several players are usually evaluated together.
+     */
+    private List<BaseHologram> getHologramSnapshot() {
+        if (hologramSnapshot == null || hologramSnapshotTick != tickCount) {
+            hologramSnapshot = core.getRegisteredHolograms();
+            hologramSnapshotTick = tickCount;
+        }
+        return hologramSnapshot;
+    }
+
+    /**
      * Lists the holograms the core could show to this player, sorted from the nearest one.
      */
     private void collectCandidates(@NotNull PlayerState state, @NotNull String worldName, double x, double z,
                                     double radius) {
-        List<BaseHologram> holograms = core.getRegisteredHolograms();
+        List<BaseHologram> holograms = getHologramSnapshot();
         double radiusSquared = radius * radius;
         state.candidates.clear();
         int poolIndex = 0;

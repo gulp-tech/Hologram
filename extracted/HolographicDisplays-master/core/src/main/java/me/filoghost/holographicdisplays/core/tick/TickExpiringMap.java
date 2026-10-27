@@ -5,6 +5,7 @@
  */
 package me.filoghost.holographicdisplays.core.tick;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
@@ -21,11 +22,24 @@ public class TickExpiringMap<K, V extends TickExpiringValue> {
     }
 
     public void removeEntries(BiPredicate<? super K, ? super V> filter) {
-        map.entrySet().removeIf(entry -> filter.test(entry.getKey(), entry.getValue()));
+        // An explicit loop is used instead of Map#removeIf, which wraps the predicate into a new lambda
+        // on every call: this method runs for every hologram line which contains placeholders.
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<K, V> entry = iterator.next();
+            if (filter.test(entry.getKey(), entry.getValue())) {
+                iterator.remove();
+            }
+        }
     }
 
     public void clearUnusedEntries(long currentTick) {
-        map.values().removeIf(value -> currentTick - value.getLastUseTick() >= expirationTicks);
+        Iterator<V> iterator = map.values().iterator();
+        while (iterator.hasNext()) {
+            if (currentTick - iterator.next().getLastUseTick() >= expirationTicks) {
+                iterator.remove();
+            }
+        }
     }
 
     public V get(K key) {
