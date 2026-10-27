@@ -169,8 +169,8 @@ public class HolographicDisplays extends FCommonsPlugin {
         }
 
         if (!isRendererActive(Settings.rendererPreference, core.getRendererName())) {
-            Log.warning("Changing 'renderer' requires a server restart - holograms keep using ""
-                                + core.getRendererName() + "" for now.");
+            Log.warning("Changing 'renderer' requires a server restart - holograms keep using '"
+                                + core.getRendererName() + "' for now.");
         }
 
         AnimationPlaceholderFactory animationPlaceholderFactory = configManager.loadAnimations(errorCollector);
