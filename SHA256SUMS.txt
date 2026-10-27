@@ -1,5 +1,5 @@
-# ÐÐ¾Ð½ÑÑÐ¾Ð»ÑÐ½ÑÐµ ÑÑÐ¼Ð¼Ñ Ð³Ð¾ÑÐ¾Ð²Ð¾Ð¹ ÑÐ±Ð¾ÑÐºÐ¸ (2026-10-27)
-# ÐÑÐ¾Ð²ÐµÑÐºÐ°:  sha256sum <ÑÐ°Ð¹Ð»>
+# Контрольные суммы готовой сборки (2026-10-27)
+# Проверка:  sha256sum <файл>
 
-a8149d759a517fd7c1050c30b5b99776c675500de5c5484c032214d53bddf2c0  dist/HolographicDisplays-3.0.5-optimized-bedrock.jar  (996465 Ð±Ð°Ð¹Ñ)
-5fdbf7a71dbd15044a7b77e1f8e0189cebb21939e47fa28fe59105752738ea4c  HolographicDisplays-3.0.5-optimized-bedrock-build.zip  (1408244 Ð±Ð°Ð¹Ñ)
+a8149d759a517fd7c1050c30b5b99776c675500de5c5484c032214d53bddf2c0  dist/HolographicDisplays-3.0.5-optimized-bedrock.jar  (996465 байт)
+5fdbf7a71dbd15044a7b77e1f8e0189cebb21939e47fa28fe59105752738ea4c  HolographicDisplays-3.0.5-optimized-bedrock-build.zip  (1408244 байт)
