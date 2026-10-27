@@ -194,7 +194,6 @@ public class HolographicDisplays extends FCommonsPlugin {
         }
     }
 
-    @Override
     private static boolean isRendererActive(String preference, String activeRenderer) {
         if (preference == null || preference.isEmpty() || "auto".equals(preference)) {
             return true; // "auto" is satisfied by whichever renderer was selected at startup
@@ -202,6 +201,7 @@ public class HolographicDisplays extends FCommonsPlugin {
         return preference.equals(activeRenderer);
     }
 
+    @Override
     public void onDisable() {
         if (bedrockGuard != null) {
             bedrockGuard.stop();
