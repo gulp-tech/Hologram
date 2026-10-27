@@ -78,6 +78,43 @@ public class SettingsModel implements MappedConfig {
     @Path("debug")
     boolean debug = false;
 
+    // Bedrock (Geyser/Floodgate) FPS guard: limits how many hologram lines a single Bedrock client receives.
+    @Path("bedrock-guard.enabled")
+    boolean bedrockGuardEnabled = true;
+
+    @Path("bedrock-guard.detection")
+    String bedrockGuardDetection = "auto";
+
+    @Path("bedrock-guard.view-range")
+    int bedrockGuardViewRange = 16;
+
+    @Path("bedrock-guard.max-visible-lines")
+    int bedrockGuardMaxVisibleLines = 12;
+
+    @Path("bedrock-guard.max-lines-per-tick")
+    int bedrockGuardMaxLinesPerTick = 6;
+
+    @Path("bedrock-guard.join-settle-ticks")
+    int bedrockGuardJoinSettleTicks = 20;
+
+    @Path("bedrock-guard.rescan-move-radius")
+    int bedrockGuardRescanMoveRadius = 2;
+
+    @Path("bedrock-guard.rescan-interval-ticks")
+    int bedrockGuardRescanIntervalTicks = 100;
+
+    @Path("bedrock-guard.players-per-tick")
+    int bedrockGuardPlayersPerTick = 6;
+
+    @Path("bedrock-guard.bypass-permission")
+    String bedrockGuardBypassPermission = "holographicdisplays.bedrockguard.bypass";
+
+    @Path("bedrock-guard.bedrock-name-prefix")
+    String bedrockGuardNamePrefix = "\u001F";
+
+    @Path("bedrock-guard.debug")
+    boolean bedrockGuardDebug = false;
+
     @Override
     public @NotNull List<String> getHeader() {
         return Arrays.asList(

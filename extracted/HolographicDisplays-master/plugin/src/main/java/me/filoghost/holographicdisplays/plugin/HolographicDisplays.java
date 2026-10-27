@@ -12,6 +12,7 @@ import me.filoghost.fcommons.logging.Log;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.Position;
 import me.filoghost.holographicdisplays.core.HolographicDisplaysCore;
+import me.filoghost.holographicdisplays.plugin.bedrock.BedrockGuard;
 import me.filoghost.holographicdisplays.plugin.bridge.bungeecord.BungeeServerTracker;
 import me.filoghost.holographicdisplays.plugin.bridge.placeholderapi.PlaceholderAPIHook;
 import me.filoghost.holographicdisplays.plugin.commands.HologramCommandManager;
@@ -48,6 +49,7 @@ public class HolographicDisplays extends FCommonsPlugin {
     private BungeeServerTracker bungeeServerTracker;
     private InternalHologramManager internalHologramManager;
     private InternalHologramEditor internalHologramEditor;
+    private BedrockGuard bedrockGuard;
 
     @Override
     public void onCheckedEnable() throws PluginEnableException {
@@ -92,6 +94,13 @@ public class HolographicDisplays extends FCommonsPlugin {
         // Load the configuration
         load(errorCollector);
 
+        // Bedrock (Geyser) FPS guard: hard budget of hologram lines per Bedrock player + paced packets
+        bedrockGuard = new BedrockGuard(this, core, Settings.bedrockGuard);
+        bedrockGuard.start();
+        Log.info("Bedrock FPS guard: " + (Settings.bedrockGuard.enabled ? "enabled (" + bedrockGuard.describeDetection()
+                + "), max " + Settings.bedrockGuard.maxVisibleLines + " lines within "
+                + Settings.bedrockGuard.viewRange + " blocks" : "disabled"));
+
         // Commands
         internalHologramEditor = new InternalHologramEditor(internalHologramManager, configManager);
         new HologramCommandManager(this, internalHologramEditor).register(this);
@@ -130,6 +139,10 @@ public class HolographicDisplays extends FCommonsPlugin {
         core.setSpaceBetweenHologramLines(Settings.spaceBetweenLines);
         core.setMaxViewRange(Settings.viewRange);
 
+        if (bedrockGuard != null) {
+            bedrockGuard.onConfigurationReload();
+        }
+
         AnimationPlaceholderFactory animationPlaceholderFactory = configManager.loadAnimations(errorCollector);
         DefaultPlaceholders.resetAndRegister(api, animationPlaceholderFactory, bungeeServerTracker);
 
@@ -153,7 +166,14 @@ public class HolographicDisplays extends FCommonsPlugin {
 
     @Override
     public void onDisable() {
+        if (bedrockGuard != null) {
+            bedrockGuard.stop();
+        }
         core.disable();
+    }
+
+    public BedrockGuard getBedrockGuard() {
+        return bedrockGuard;
     }
 
     public static HolographicDisplays getInstance() {

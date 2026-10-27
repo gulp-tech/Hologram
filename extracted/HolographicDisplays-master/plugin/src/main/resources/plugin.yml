@@ -4,7 +4,7 @@ author: filoghost (optimized for Purpur + Geyser by Arena Agent)
 version: 3.0.5-optimized-bedrock
 api-version: 1.13
 
-softdepend: [PlaceholderAPI, Geyser-Spigot]
+softdepend: [PlaceholderAPI, Geyser-Spigot, floodgate]
 
 description: |
   Optimized for Bedrock players via Geyser on Purpur.

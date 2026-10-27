@@ -11,6 +11,7 @@ import me.filoghost.fcommons.command.sub.SubCommandContext;
 import me.filoghost.fcommons.command.sub.SubCommandManager;
 import me.filoghost.holographicdisplays.plugin.HolographicDisplays;
 import me.filoghost.holographicdisplays.plugin.commands.subs.AddLineCommand;
+import me.filoghost.holographicdisplays.plugin.commands.subs.BedrockGuardCommand;
 import me.filoghost.holographicdisplays.plugin.commands.subs.AlignCommand;
 import me.filoghost.holographicdisplays.plugin.commands.subs.CopyCommand;
 import me.filoghost.holographicdisplays.plugin.commands.subs.CreateCommand;
@@ -79,6 +80,7 @@ public class HologramCommandManager extends SubCommandManager {
         subCommands.add(new InfoCommand(this, hologramEditor));
 
         subCommands.add(new DebugCommand());
+        subCommands.add(new BedrockGuardCommand(holographicDisplays));
         subCommands.add(helpCommand);
     }
 

@@ -9,6 +9,8 @@ package me.filoghost.holographicdisplays.plugin.config;
 import me.filoghost.fcommons.Strings;
 import me.filoghost.fcommons.logging.ErrorCollector;
 import me.filoghost.holographicdisplays.common.DebugLogger;
+import me.filoghost.holographicdisplays.plugin.bedrock.BedrockGuardConfig;
+import me.filoghost.holographicdisplays.plugin.bedrock.BedrockPlayerDetector;
 import me.filoghost.holographicdisplays.plugin.format.DisplayFormat;
 
 import java.time.DateTimeException;
@@ -42,6 +44,9 @@ public class Settings {
     public static boolean pingerTrimMotd;
     public static Map<String, ServerAddress> pingerServerAddresses;
 
+    /** Mutated in place, the Bedrock guard keeps a reference to it. */
+    public static final BedrockGuardConfig bedrockGuard = new BedrockGuardConfig();
+
     public static void load(SettingsModel config, ErrorCollector errorCollector) {
         spaceBetweenLines = config.spaceBetweenLines;
         viewRange = config.viewRange;
@@ -74,6 +79,20 @@ public class Settings {
                 }
             }
         }
+
+        bedrockGuard.enabled = config.bedrockGuardEnabled;
+        bedrockGuard.detection = BedrockPlayerDetector.Detection.parse(config.bedrockGuardDetection);
+        bedrockGuard.viewRange = config.bedrockGuardViewRange;
+        bedrockGuard.maxVisibleLines = config.bedrockGuardMaxVisibleLines;
+        bedrockGuard.maxLinesPerTick = config.bedrockGuardMaxLinesPerTick;
+        bedrockGuard.joinSettleTicks = config.bedrockGuardJoinSettleTicks;
+        bedrockGuard.rescanMoveRadius = config.bedrockGuardRescanMoveRadius;
+        bedrockGuard.rescanIntervalTicks = config.bedrockGuardRescanIntervalTicks;
+        bedrockGuard.playersPerTick = config.bedrockGuardPlayersPerTick;
+        bedrockGuard.bypassPermission = config.bedrockGuardBypassPermission;
+        bedrockGuard.namePrefix = config.bedrockGuardNamePrefix;
+        bedrockGuard.debug = config.bedrockGuardDebug;
+        bedrockGuard.clamp();
 
         DebugLogger.setDebugEnabled(config.debug);
     }

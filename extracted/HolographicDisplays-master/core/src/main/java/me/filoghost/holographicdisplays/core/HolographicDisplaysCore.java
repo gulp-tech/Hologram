@@ -29,6 +29,10 @@ import me.filoghost.holographicdisplays.nms.common.NMSManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HolographicDisplaysCore {
 
@@ -94,6 +98,21 @@ public class HolographicDisplaysCore {
 
     public void setMaxViewRange(int maxViewRange) {
         CoreGlobalConfig.maxViewRange = maxViewRange;
+    }
+
+    /**
+     * Returns a snapshot of every hologram currently registered, from both the current and the legacy API, including
+     * the ones created by other plugins. Must only be used on the main thread.
+     */
+    public @NotNull List<BaseHologram> getRegisteredHolograms() {
+        List<BaseHologram> holograms = new ArrayList<>();
+        if (apiHologramManager != null) {
+            holograms.addAll(apiHologramManager.getHolograms());
+        }
+        if (v2HologramManager != null) {
+            holograms.addAll(v2HologramManager.getHolograms());
+        }
+        return holograms;
     }
 
     public void disable() {
