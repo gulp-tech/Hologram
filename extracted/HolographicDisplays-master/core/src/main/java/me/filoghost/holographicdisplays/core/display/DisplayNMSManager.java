@@ -45,7 +45,7 @@ public final class DisplayNMSManager implements NMSManager {
     private static final long ERROR_LOG_INTERVAL_MILLIS = 20000L;
 
     private final Plugin plugin;
-    private final List<DisplayLine> lines = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<DisplayLine> lines = new CopyOnWriteArrayList<>();
     private volatile boolean stopped;
     private final Map<Integer, Integer> markerIDByEntityID = new ConcurrentHashMap<>();
 
@@ -291,7 +291,9 @@ public final class DisplayNMSManager implements NMSManager {
 
         @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
         public void onPlayerInteract(PlayerInteractEntityEvent event) {
-            handle(event.getPlayer(), event.getRightClicked(), () -> event.setCancelled(true));
+            if (handle(event.getPlayer(), event.getRightClicked())) {
+                event.setCancelled(true);
+            }
         }
 
         @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -299,12 +301,14 @@ public final class DisplayNMSManager implements NMSManager {
             if (!(event.getDamager() instanceof Player)) {
                 return;
             }
-            handle((Player) event.getDamager(), event.getEntity(), () -> event.setCancelled(true));
+            if (handle((Player) event.getDamager(), event.getEntity())) {
+                event.setCancelled(true);
+            }
         }
 
-        private void handle(Player player, Entity entity, Cancellable cancellable) {
+        private boolean handle(Player player, Entity entity) {
             if (entity == null) {
-                return;
+                return false;
             }
 
             int markerID;
@@ -312,28 +316,22 @@ public final class DisplayNMSManager implements NMSManager {
                 Integer byEntityID = markerIDByEntityID.get(entity.getEntityId());
                 markerID = byEntityID != null ? byEntityID : DisplayMarker.read(entity);
             } catch (Throwable t) {
-                return;
+                return false;
             }
             if (markerID == 0) {
-                return;
+                return false;
             }
 
             PacketListener listener = packetListener;
             if (listener == null) {
-                return;
+                return false;
             }
             try {
-                if (listener.onAsyncEntityInteract(player, markerID)) {
-                    cancellable.cancel();
-                }
+                return listener.onAsyncEntityInteract(player, markerID);
             } catch (Throwable t) {
                 logError(t, "Error while routing a hologram click");
+                return false;
             }
-        }
-
-
-        private interface Cancellable {
-            void cancel();
         }
 
     }

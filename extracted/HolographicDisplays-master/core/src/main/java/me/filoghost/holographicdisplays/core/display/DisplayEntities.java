@@ -9,7 +9,6 @@ import me.filoghost.fcommons.logging.Log;
 import me.filoghost.holographicdisplays.common.PositionCoordinates;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -18,30 +17,28 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Creates and configures the entities used by the display renderer.
  * <p>
- * Only the public Bukkit API is used, so that the renderer keeps working on server versions whose internals are
- * unknown to this plugin. Optional API elements are accessed reflectively: a missing or renamed method degrades into
- * a single warning instead of breaking holograms or the connection of players.
+ * Optional API (anything added after the oldest Bukkit version this plugin compiles against) is called through
+ * {@link DisplayReflect}, so that a missing method degrades into a single warning instead of breaking holograms or
+ * the connection of players.
  */
 final class DisplayEntities {
 
     private static final int MAX_TICKS = Integer.MAX_VALUE;
+    private static final Set<String> WARNED = new HashSet<>();
+
     private static boolean invisibilityUnsupported;
     private static boolean interactionWarned;
-    private static boolean persistenceChecked;
-    private static boolean persistentSetterMissing;
 
     private DisplayEntities() {
     }
@@ -73,7 +70,7 @@ final class DisplayEntities {
             return null;
         }
 
-        markAsOurs(entity, markerEntityID);
+        DisplayMarker.tag(entity, markerEntityID);
         return entity;
     }
 
@@ -82,26 +79,23 @@ final class DisplayEntities {
         try {
             stand = location.getWorld().spawn(location, ArmorStand.class);
         } catch (Throwable t) {
-            warnOnce("spawn-stand", "Can't spawn an armor stand, are 'armor_stands' allowed in server config?", t);
+            warnOnce("spawn-stand", "Can't spawn an armor stand, are armor stands allowed on this server?", t);
             return null;
         }
         if (stand == null) {
             return null;
         }
 
-        try {
-            stand.setMarker(true); // No hitbox: players can't push or attack it
-            stand.setSmall(true);
-            stand.setBasePlate(false);
-            stand.setArms(false);
-            stand.setGravity(false);
-            stand.setSilent(true);
-            makeInvisible(stand);
-            protect(stand);
-            applyText(stand, text);
-        } catch (Throwable t) {
-            warnOnce("configure-stand", "Can't configure an armor stand", t);
-        }
+        // Marker + invisible: nothing but the name tag is shown, and players can't push or hit the stand
+        DisplayReflect.invoke(stand, "setMarker", boolean.class, true);
+        DisplayReflect.invoke(stand, "setSmall", boolean.class, true);
+        DisplayReflect.invoke(stand, "setBasePlate", boolean.class, false);
+        DisplayReflect.invoke(stand, "setArms", boolean.class, false);
+        DisplayReflect.invoke(stand, "setGravity", boolean.class, false);
+        DisplayReflect.invoke(stand, "setSilent", boolean.class, true);
+        makeInvisible(stand);
+        protect(stand);
+        applyText(stand, text);
         return stand;
     }
 
@@ -121,13 +115,13 @@ final class DisplayEntities {
         }
 
         try {
-            item.setPickupDelay(MAX_TICKS); // Holograms must never become loot
+            item.setPickupDelay(MAX_TICKS); // A hologram must never become loot
             item.setVelocity(new Vector());
-            item.setGravity(false);
-            protect(item);
         } catch (Throwable t) {
             warnOnce("configure-item", "Can't configure an item entity", t);
         }
+        DisplayReflect.invoke(item, "setGravity", boolean.class, false);
+        protect(item);
         return item;
     }
 
@@ -144,39 +138,17 @@ final class DisplayEntities {
         try {
             entity = world.spawnEntity(location, type);
         } catch (Throwable t) {
-            warnNoInteraction("the interaction entity can't be spawned");
+            warnNoInteraction("an interaction entity can't be spawned");
             return null;
         }
         if (entity == null) {
             return null;
         }
 
-        // Same size as the hitbox used by the packet renderer, so that clicking feels the same
-        invoke(entity, "setInteractionWidth", double.class, 0.51);
-        invoke(entity, "setInteractionHeight", float.class, 0.5f);
+        // Same size as the hitbox of the packet renderer, so clicking feels the same
+        DisplayReflect.invoke(entity, "setInteractionWidth", double.class, 0.51);
+        DisplayReflect.invoke(entity, "setInteractionHeight", float.class, 0.5f);
         return entity;
-    }
-
-    private static final Set<String> WARNED = new HashSet<>();
-
-    private static void warnOnce(String key, String message, @Nullable Throwable t) {
-        if (!WARNED.add(key)) {
-            return;
-        }
-        if (t == null) {
-            Log.warning("[Display renderer] " + message);
-        } else {
-            Log.warning("[Display renderer] " + message, t);
-        }
-    }
-
-    private static void warnNoInteraction(String reason) {
-        if (interactionWarned) {
-            return;
-        }
-        interactionWarned = true;
-        Log.warning("[Display renderer] Hologram line clicks are disabled because " + reason
-                            + ". Use Minecraft 1.19 or newer for click support in the display renderer.");
     }
 
     static void applyText(Entity entity, @Nullable String text) {
@@ -203,23 +175,24 @@ final class DisplayEntities {
     }
 
     static void move(Entity entity, PositionCoordinates coordinates, double yOffset) {
+        if (isInvalid(entity)) {
+            return;
+        }
         try {
-            if (isInvalid(entity)) {
-                return;
-            }
             Location current = entity.getLocation();
             World world = current.getWorld();
             if (world == null) {
                 return;
             }
+            double targetY = coordinates.getY() + yOffset;
             double diffX = current.getX() - coordinates.getX();
-            double diffY = current.getY() - (coordinates.getY() + yOffset);
+            double diffY = current.getY() - targetY;
             double diffZ = current.getZ() - coordinates.getZ();
             if (diffX * diffX + diffY * diffY + diffZ * diffZ < 1.0E-8) {
                 return;
             }
-            entity.teleport(new Location(world, coordinates.getX(), coordinates.getY() + yOffset,
-                                         coordinates.getZ(), current.getYaw(), 0.0f));
+            entity.teleport(new Location(world, coordinates.getX(), targetY, coordinates.getZ(),
+                                         current.getYaw(), 0.0f));
         } catch (Throwable t) {
             warnOnce("move", "Can't move a hologram entity", t);
         }
@@ -232,7 +205,7 @@ final class DisplayEntities {
         try {
             entity.remove();
         } catch (Throwable ignored) {
-            // The entity may already be gone (chunk unloaded), which is fine
+            // The entity may already be gone (e.g. its chunk was unloaded), which is fine
         }
     }
 
@@ -252,64 +225,43 @@ final class DisplayEntities {
             return;
         }
         try {
-            entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, MAX_TICKS, 0, true, false, false));
-        } catch (Throwable t) {
-            if (invisibilityUnsupported) {
-                return;
+            Object effect = DisplayReflect.newPotionEffect(PotionEffect.class, PotionEffectType.INVISIBILITY,
+                                                           MAX_TICKS, true, false);
+            if (effect == null || !DisplayReflect.invoke(entity, "addPotionEffect", PotionEffect.class, effect)) {
+                invisibilityUnsupported = true;
+                warnOnce("invisibility", "Hologram entities can't be made invisible, they will be shown as armor"
+                        + " stands (this only affects their look, not performance)", null);
             }
+        } catch (Throwable t) {
             invisibilityUnsupported = true;
             warnOnce("invisibility", "Hologram entities can't be made invisible, they will be shown as armor stands"
-                    + " (this only affects how they look, not the performance)", t);
+                    + " (this only affects their look, not performance)", t);
         }
     }
 
     private static void protect(Entity entity) {
-        try {
-            entity.setInvulnerable(true);
-            entity.setRemoveWhenFarAway(false);
-        } catch (Throwable ignored) {
-            // Not critical, the entity just behaves like a regular one
-        }
-
-        if (persistenceChecked) {
-            if (!persistentSetterMissing) {
-                try {
-                    Method method = entity.getClass().getMethod("setPersistent", boolean.class);
-                    method.invoke(entity, false);
-                } catch (Throwable ignored) {
-                }
-            }
-            return;
-        }
-        persistenceChecked = true;
-        try {
-            Method method = entity.getClass().getMethod("setPersistent", boolean.class);
-            method.invoke(entity, false);
-        } catch (Throwable t) {
-            persistentSetterMissing = true;
-            Log.info("[Display renderer] This server can't keep entities out of the world files, hologram entities"
-                             + " will be removed at shutdown and on the next startup instead.");
-        }
+        DisplayReflect.invoke(entity, "setInvulnerable", boolean.class, true);
+        DisplayReflect.invoke(entity, "setRemoveWhenFarAway", boolean.class, false);
+        DisplayReflect.invoke(entity, "setPersistent", boolean.class, false);
     }
 
-    private static void markAsOurs(Entity entity, int markerEntityID) {
-        NamespacedKey key = DisplayMarker.getKey();
-        if (key == null) {
+    private static void warnNoInteraction(String reason) {
+        if (interactionWarned) {
             return;
         }
-        try {
-            entity.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, markerEntityID);
-        } catch (Throwable ignored) {
-            // Used for cleanup and click routing, both of which have fallbacks
-        }
+        interactionWarned = true;
+        Log.warning("[Display renderer] Hologram line clicks are disabled because " + reason
+                            + ". Clicks work on Minecraft 1.19 and newer in the display renderer.");
     }
 
-    private static void invoke(Object target, String methodName, Class<?> parameterType, Object value) {
-        try {
-            Method method = target.getClass().getMethod(methodName, parameterType);
-            method.invoke(target, value);
-        } catch (Throwable ignored) {
-            // Optional property, e.g. servers older than 1.19
+    private static void warnOnce(String key, String message, @Nullable Throwable t) {
+        if (!WARNED.add(key)) {
+            return;
+        }
+        if (t == null) {
+            Log.warning("[Display renderer] " + message);
+        } else {
+            Log.warning("[Display renderer] " + message, t);
         }
     }
 
