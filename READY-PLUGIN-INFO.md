@@ -21,7 +21,7 @@ sha256 `f3e9ef2be1b3bc777f580d5d73118a0aea1aea0a0bd51cb4678b76b74b4a8177`.
 | Тот же файл, по «ожидаемому» пути сборки | `extracted/HolographicDisplays-master/plugin/target/HolographicDisplays-3.0.5-optimized-bedrock.jar` |
 | Полный лог сборки (Maven, 31 модуль) | `dist/BUILD-LOG.txt` |
 
-- размер: **961 921 байт** (≈ 0,92 MiB), 828 записей, `.jar` от 2026-10-27 (сборка `1f58b9a`, уже с Bedrock FPS Guard)
+- размер: **961 921 байт** (≈ 0,92 MiB), 813 записей, `.jar` от 2026-10-27 (сборка `1f58b9a`, уже с Bedrock FPS Guard)
 - sha256: `cdff07b9bbe7c89c8d010d2ec97982144763c54116f3da98be5b0c5716f9a62b`
 - предыдущая сборка (без guard'а): `7a1e99d3f14fb4a84c845a3245d414bb53770ce565afd30ca0e445d5616cd029`, 934 596 B
 - CRC-тест архива: `No errors detected`
