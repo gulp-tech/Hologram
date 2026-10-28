@@ -36,6 +36,7 @@ import java.util.Set;
 final class DisplayEntities {
 
     private static final int MAX_TICKS = Integer.MAX_VALUE;
+    private static final int MAX_POTION_DURATION = Integer.MAX_VALUE >> 5;
     private static final Set<String> WARNED = new HashSet<>();
 
     private static boolean invisibilityUnsupported;
@@ -56,7 +57,16 @@ final class DisplayEntities {
         Entity entity;
         switch (type) {
             case TEXT:
-                entity = spawnNamedStand(location, (String) content);
+                // A text display has no model, so there is no stand body to hide: it is what modern servers get
+                entity = DisplayTextDisplay.spawn(location);
+                if (entity != null) {
+                    if (!DisplayTextDisplay.applyText(entity, (String) content)) {
+                        DisplayEntities.remove(entity);
+                        entity = spawnNamedStand(location, (String) content);
+                    }
+                } else {
+                    entity = spawnNamedStand(location, (String) content);
+                }
                 break;
             case ITEM:
                 entity = spawnItem(location, (ItemStack) content);
@@ -69,6 +79,9 @@ final class DisplayEntities {
         }
         if (entity == null) {
             return null;
+        }
+        if (DisplayTextDisplay.isTextDisplay(entity)) {
+            protect(entity); // A display entity must not be saved in the world nor removed by despawning
         }
 
         DisplayMarker.tag(entity, markerEntityID);
@@ -94,7 +107,7 @@ final class DisplayEntities {
         DisplayReflect.invoke(stand, "setArms", boolean.class, false);
         DisplayReflect.invoke(stand, "setGravity", boolean.class, false);
         DisplayReflect.invoke(stand, "setSilent", boolean.class, true);
-        makeInvisible(stand);
+        hideBody(stand);
         protect(stand);
         applyText(stand, text);
         return stand;
@@ -156,6 +169,10 @@ final class DisplayEntities {
     }
 
     static void applyText(Entity entity, @Nullable String text) {
+        if (DisplayTextDisplay.isTextDisplay(entity)) {
+            DisplayTextDisplay.applyText(entity, text);
+            return;
+        }
         if (!(entity instanceof ArmorStand)) {
             return;
         }
@@ -224,13 +241,36 @@ final class DisplayEntities {
         }
     }
 
+    /**
+     * Hides the body of an entity while keeping its name tag visible.
+     * <p>
+     * The invisible flag is the one clients and Bedrock protocol translators are supposed to respect, so it is
+     * applied first and the potion effect is applied as well: on servers where only one of the two works, the
+     * hologram still ends up as floating text without a stand behind it.
+     */
+    private static void hideBody(LivingEntity entity) {
+        if (!CoreGlobalConfig.displayHideBodies) {
+            return;
+        }
+
+        DisplayReflect.invoke(entity, "setVisible", boolean.class, false);
+        Object nmsEntity = DisplayReflect.invokeReturning(entity, "getHandle");
+        if (nmsEntity != null) {
+            // Mojang mappings call it setInvisible, older Spigot mappings setVisible - both set the same metadata
+            DisplayReflect.invoke(nmsEntity, "setInvisible", boolean.class, true);
+            DisplayReflect.invoke(nmsEntity, "setVisible", boolean.class, false);
+        }
+        makeInvisible(entity);
+    }
+
     private static void makeInvisible(LivingEntity entity) {
         if (invisibilityUnsupported) {
             return;
         }
         try {
+            // Bukkit caps a duration above 2^26 and logs about it, so the cap is applied here instead
             Object effect = DisplayReflect.newPotionEffect(PotionEffect.class, PotionEffectType.INVISIBILITY,
-                                                           MAX_TICKS, true, false);
+                                                           MAX_POTION_DURATION, true, false);
             if (effect == null || !DisplayReflect.invoke(entity, "addPotionEffect", PotionEffect.class, effect)) {
                 invisibilityUnsupported = true;
                 warnOnce("invisibility", "Hologram entities can't be made invisible, they will be shown as armor"

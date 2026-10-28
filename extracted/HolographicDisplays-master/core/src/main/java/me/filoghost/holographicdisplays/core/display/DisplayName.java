@@ -32,6 +32,10 @@ final class DisplayName {
     }
 
     static void detect() {
+        if (detected) {
+            return; // Lookups are done once: the API of a running server doesn't change
+        }
+        detected = true;
         setCustomNameStringMethod = findSetter(String.class);
 
         try {
@@ -49,6 +53,28 @@ final class DisplayName {
 
     static boolean isSupported() {
         return setCustomNameStringMethod != null || setCustomNameComponentMethod != null;
+    }
+
+    /**
+     * @return true if legacy color codes can be turned into a chat component, which text display entities need
+     */
+    static boolean hasComponentSupport() {
+        detect();
+        return legacySectionSerializer != null && serializerDeserializeMethod != null;
+    }
+
+    /**
+     * @return an {@code net.kyori.adventure.text.Component}, or null if this server has no adventure API
+     */
+    static @Nullable Object toComponent(String text) {
+        if (legacySectionSerializer == null || serializerDeserializeMethod == null) {
+            return null;
+        }
+        try {
+            return serializerDeserializeMethod.invoke(legacySectionSerializer, text);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     private static @Nullable Method findSetter(Class<?> parameterType) {
@@ -82,16 +108,6 @@ final class DisplayName {
         }
     }
 
-    private static @Nullable Object toComponent(String text) {
-        if (legacySectionSerializer == null || serializerDeserializeMethod == null) {
-            return null;
-        }
-        try {
-            return serializerDeserializeMethod.invoke(legacySectionSerializer, text);
-        } catch (Throwable t) {
-            return null;
-        }
-    }
 
     private static void fail(String reason) {
         if (reportedFailure) {

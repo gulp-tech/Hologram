@@ -49,6 +49,25 @@ final class DisplayReflect {
         }
     }
 
+    /**
+     * Calls a no-argument method and returns its value, if this server provides it.
+     */
+    static @Nullable Object invokeReturning(Object target, String methodName) {
+        if (target == null) {
+            return null;
+        }
+        Method method = lookup(target.getClass(), methodName);
+        if (method == null) {
+            return null;
+        }
+        try {
+            Object value = method.invoke(target);
+            return value;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     static boolean invokeNoArg(Object target, String methodName) {
         if (target == null) {
             return false;

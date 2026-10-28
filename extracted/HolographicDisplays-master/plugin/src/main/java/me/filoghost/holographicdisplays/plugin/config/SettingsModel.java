@@ -28,7 +28,7 @@ public class SettingsModel implements MappedConfig {
      * How holograms are drawn.
      * "auto" - protocol packets on the versions this plugin knows (1.8.4 - 1.20.4), real entities on any other
      *          version instead of refusing to start.
-     * "display" - always real entities (invisible armor stands for text, items for item lines), no NMS at all,
+     * "display" - always real entities (text displays or armor stands for text, items for item lines), no NMS,
      *             so it also works on new/unknown server versions. Clicks need Minecraft 1.19+.
      * "packets" - old behavior, the plugin won't start on unsupported versions.
      */
@@ -56,6 +56,40 @@ public class SettingsModel implements MappedConfig {
      */
     @Path("display.interaction-entities")
     boolean displayInteractionEntities = true;
+
+    /*
+     * What draws a text line in "display" mode.
+     * "text-display" - a TEXT_DISPLAY entity: it has no model at all, so nothing can be seen behind the text.
+     *                  This is what holograms use on Minecraft 1.19.4 and newer.
+     * "armor-stand"  - an invisible armor stand with the text as its name tag, which older servers need.
+     *                  Clients which ignore the invisible flag (some Bedrock translators) then show the stand.
+     * A server restart is needed after changing this.
+     */
+    @Path("display.carrier")
+    String displayTextCarrier = "auto";
+
+    /*
+     * Vertical offset (in blocks) of a TEXT_DISPLAY entity. Text displays position their own text, so the default
+     * is zero. Only change it if the lines sit too high or too low compared to the rest of the hologram.
+     */
+    @Path("display.text-y-offset-text-display")
+    double displayTextYOffsetTextDisplay = 0.0;
+
+    /*
+     * Whether the entities which carry hologram content are hidden from players. Keep it on: turning it off shows
+     * every armor stand, which is only useful to see what a hologram is made of.
+     */
+    @Path("display.hide-bodies")
+    boolean displayHideBodies = true;
+
+    /*
+     * Holograms listed in builtin-holograms.yml (next to config.yml) are created automatically if a hologram with
+     * that name doesn't exist yet - useful for a fixed set of shop or info holograms. The file is written by the
+     * plugin on the first start and can be edited freely; remove this hologram from it (or delete it with
+     * /holo delete <name> and remove the file) if you don't want it. Set this to false to ignore that file.
+     */
+    @Path("builtin-holograms.enabled")
+    boolean builtinHologramsEnabled = true;
 
     /*
      * The welcome hologram is created once, only when database.yml has no holograms at all, and saved into it like

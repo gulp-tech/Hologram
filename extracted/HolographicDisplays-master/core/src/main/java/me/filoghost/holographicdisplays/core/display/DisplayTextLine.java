@@ -25,7 +25,9 @@ final class DisplayTextLine extends DisplayLine implements TextNMSPacketEntity {
 
     @Override
     double yOffset() {
-        return CoreGlobalConfig.displayTextYOffset;
+        // A name tag floats above its entity, a text display places its text at the entity itself
+        return DisplayTextDisplay.isActive() ? CoreGlobalConfig.displayTextYOffsetTextDisplay
+                                             : CoreGlobalConfig.displayTextYOffset;
     }
 
     @Override

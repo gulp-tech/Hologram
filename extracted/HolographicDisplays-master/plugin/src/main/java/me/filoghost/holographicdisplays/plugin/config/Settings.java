@@ -54,6 +54,10 @@ public class Settings {
     public static double displayTextYOffset;
     public static int displayTextUpdateIntervalTicks;
     public static boolean displayInteractionEntities;
+    public static String displayTextCarrier;
+    public static double displayTextYOffsetTextDisplay;
+    public static boolean displayHideBodies;
+    public static boolean builtinHologramsEnabled;
 
     /** Mutated in place, the Bedrock guard keeps a reference to it. */
     public static final BedrockGuardConfig bedrockGuard = new BedrockGuardConfig();
@@ -70,10 +74,18 @@ public class Settings {
         welcomeHologramZ = config.welcomeHologramZ;
         displayTextUpdateIntervalTicks = Math.max(1, config.displayTextUpdateIntervalTicks);
         displayInteractionEntities = config.displayInteractionEntities;
+        displayTextCarrier = config.displayTextCarrier != null ? config.displayTextCarrier.trim()
+                .toLowerCase(java.util.Locale.ROOT) : "auto";
+        displayTextYOffsetTextDisplay = config.displayTextYOffsetTextDisplay;
+        displayHideBodies = config.displayHideBodies;
+        builtinHologramsEnabled = config.builtinHologramsEnabled;
         CoreGlobalConfig.rendererPreference = rendererPreference;
         CoreGlobalConfig.displayTextYOffset = displayTextYOffset;
         CoreGlobalConfig.displayTextUpdateIntervalTicks = displayTextUpdateIntervalTicks;
         CoreGlobalConfig.displayInteractionEntities = displayInteractionEntities;
+        CoreGlobalConfig.displayTextCarrier = displayTextCarrier;
+        CoreGlobalConfig.displayTextYOffsetTextDisplay = displayTextYOffsetTextDisplay;
+        CoreGlobalConfig.displayHideBodies = displayHideBodies;
         quickEditCommands = config.quickEditCommands;
         timeFormat = parseTimeFormatter(config.timeFormat, config.timeZone, errorCollector);
         updateNotification = config.updateNotification;

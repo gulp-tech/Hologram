@@ -22,6 +22,7 @@ import me.filoghost.holographicdisplays.plugin.config.ConfigManager;
 import me.filoghost.holographicdisplays.plugin.config.InternalHologramConfig;
 import me.filoghost.holographicdisplays.plugin.config.InternalHologramLoadException;
 import me.filoghost.holographicdisplays.plugin.config.Settings;
+import me.filoghost.holographicdisplays.plugin.builtin.BuiltinHolograms;
 import me.filoghost.holographicdisplays.plugin.welcome.WelcomeHologram;
 import me.filoghost.holographicdisplays.plugin.config.upgrade.AnimationsLegacyUpgrade;
 import me.filoghost.holographicdisplays.plugin.config.upgrade.DatabaseLegacyUpgrade;
@@ -198,6 +199,14 @@ public class HolographicDisplays extends FCommonsPlugin {
 
         if (hologramConfigs.isEmpty()) {
             WelcomeHologram.createIfDatabaseIsEmpty(internalHologramEditor);
+        }
+
+        // Holograms shipped with this server (builtin-holograms.yml): every name which doesn't exist yet is created
+        // once and saved, so afterwards they behave like any other hologram
+        try {
+            BuiltinHolograms.createMissing(internalHologramEditor, configManager);
+        } catch (Throwable t) {
+            Log.warning("[Builtin holograms] Can't read \"" + BuiltinHolograms.FILE_NAME + "\", skipping", t);
         }
     }
 

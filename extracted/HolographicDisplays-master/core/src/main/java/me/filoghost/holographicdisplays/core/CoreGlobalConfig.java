@@ -37,4 +37,23 @@ public class CoreGlobalConfig {
      */
     public static boolean displayInteractionEntities = true;
 
+    /**
+     * What draws a text line in the display renderer: "auto" or "text-display" uses TEXT_DISPLAY entities, which
+     * have no model at all, so nothing can show up behind the text; "armor-stand" uses invisible armor stands, the
+     * only option on servers older than 1.19.4.
+     */
+    public static String displayTextCarrier = "auto";
+
+    /**
+     * Vertical offset of a text display entity. Unlike a name tag, the text of a display is positioned by the
+     * entity itself, so it needs no correction by default.
+     */
+    public static double displayTextYOffsetTextDisplay = 0.0;
+
+    /**
+     * Whether the entities which carry hologram content are hidden from clients. Turning it off is only useful to
+     * see what a hologram is made of, which costs an armor stand body per line.
+     */
+    public static boolean displayHideBodies = true;
+
 }
