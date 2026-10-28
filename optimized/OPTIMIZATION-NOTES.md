@@ -152,3 +152,20 @@ welcome-hologram:
 legacy-коды; индивидуальные `height` у строк в HD тоже нет — интервал общий `space-between-lines`.
 Ручной вариант вместо «пустой базы»: файл `voidpe-welcome-database.yml` в корне репозитория — это готовый
 `database.yml`, его можно положить в `plugins/HolographicDisplays/` и сделать `/holograms reload`.
+
+## 7. Исправление: спам `UnsupportedOperationException` в консоли
+
+Симптом: `Task #41 for HolographicDisplays ... generated an exception
+java.lang.UnsupportedOperationException at CopyOnWriteArrayList$COWIterator.remove ... DisplayNMSManager.flush`.
+
+Причина: `lines` рендерера — `CopyOnWriteArrayList` (он нужен для потокобезопасного `addIfAbsent` из потока отправки
+пакетов), а освобождённую строку я удалял через `Iterator#remove`, который у COW-итератора всегда бросает это
+исключение. Дальше то же самое пытался сделать `catch`-блок, исключение уходило в Bukkit, и Bukkit повторял таск
+каждый тик: консоль заливалась, а освобождённые строки **никогда не выписывались** из рендерера (то есть их `tick()`
+продолжал вызываться вечно — маленькая утечка и лишняя работа на тик).
+
+Исправлено: во время прохода ничего не удаляется, завершённые строки собираются в список и снимаются одним
+`lines.removeAll(finished)`. Плюс `unregister()` проверяет `hasPendingRequests()`: если запрос на показ пришёл, пока
+строка освобождалась, она регистрируется обратно, чтобы голограмма не осталась невидимой. Заодно в `ci/build.sh`
+добавлен `actions/cache` на `~/.m2/repository` и жёсткие сетевые таймауты — сборки на Actions перестали виснуть на
+загрузке зависимостей (было: 22+ минуты и `maven exit code: 124`).

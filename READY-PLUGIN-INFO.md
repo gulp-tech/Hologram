@@ -10,12 +10,12 @@
 
 | Файл | Размер | Что внутри |
 |---|---|---|
-| `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` | 1001401 B | сам плагин — класть в `plugins/` |
+| `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` | 1001616 B | сам плагин — класть в `plugins/` |
 | `HolographicDisplays-3.0.5-optimized-bedrock-build.zip` | см. `SHA256SUMS.txt` | готовый `.jar` + полный Maven-проект + `build.sh` + `BUILD-HERE.md` + лог сборки |
 | `SHA256SUMS.txt` | — | sha256 обоих файлов выше |
 | `dist/BUILD-LOG.txt` | 767819 B | полный лог `mvn clean package -DskipTests` (32 модуля, BUILD SUCCESS) |
 
-sha256 jar: `bdd6baf5f06aa071526d6adf3844eec999213de0cf1bbeb9788b70ef28cd3a4b`
+sha256 jar: `68edb5418e47fe5562d4a28eb40841045847f9fd6bb3fbf3f247f8768ec093f1`
 
 Скачать (работает без авторизации, это публичный репозиторий):
 
