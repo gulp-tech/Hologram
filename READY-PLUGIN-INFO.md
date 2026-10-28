@@ -249,7 +249,7 @@ legacy-коды; индивидуальные `height` у строк в HD то�
     display:
       carrier: auto                     # auto | text-display | armor-stand
       text-y-offset: -0.29              # смещение ни́метегов (режим armor-stand)
-      text-y-offset-text-display: 0.0   # смещение TEXT_DISPLAY
+      text-y-offset-text-display: 0.0   # смещение TEXT_DISPLAY (если текст встал чуть ниже/выше — править его)
       hide-bodies: true                 # false = НЕ прятать тела (только чтобы увидеть, из чего голограмма)
     ```
 
