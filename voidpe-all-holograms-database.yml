@@ -1,0 +1,149 @@
+#
+# Готовая база голограмм HolographicDisplays (файл database.yml) — VoidPe.
+#
+# В ней 8 голограмм: welcome + 7 перенесённых из DecentHolograms
+# (donate, commands, privat_gold, privat_reinforced, privat_emerald_ore,
+#  privat_diamond_ore, privat_diamond) — координаты сохранены точно.
+#
+# ЭТОТ ФАЙЛ НЕ ОБЯЗАТЕЛЕН: в сборке от 2026-10-28 эти 7 голограмм создаются
+# сами из plugins/HolographicDisplays/builtin-holograms.yml. Он нужен, только
+# если вы хотите поставить всё одним файлом прямо сейчас.
+#
+# Как поставить:
+#   1) остановить сервер и сохранить текущий файл:
+#      mv plugins/HolographicDisplays/database.yml plugins/HolographicDisplays/database.yml.bak
+#   2) положить ЭТОТ файл как plugins/HolographicDisplays/database.yml
+#   3) запустить сервер (или /holograms reload)
+#
+# Про дубли: plugin/HolographicDisplays/builtin-holograms.yml создаёт голограммы только
+# если имени ещё нет в базе. После установки этого файла все 8 имён заняты, поэтому
+# builtin-механизм ничего не добавит (и /holo delete donate + рестарт вернут donate из
+# builtin-файла — чтобы убрать навсегда, удалите секцию и там).
+#
+# Формат HD: имя -> lines + position. hex-цвета HD не понимает (палитра 1.8),
+# поэтому они заменены на ближайшие legacy-коды. Высота строки не задаётся:
+# промежуток общий — space-between-lines в config.yml.
+#
+# Далее это обычные голограммы: /holo edit donate, /holo moveHere donate, /holo delete donate.
+# При любой правке плагин перезапишет этот файл и комментарии уберёт — это нормально.
+#
+welcome:
+  lines:
+    - 'icon: BEACON'
+    - '&b✦ &9V&9o&bi&bd&fP&fe &b✦'
+    - '&9━━━━━━━━━━━━━━━━━━'
+    - '&fдобро пожаловать на сервер!'
+    - '&bприятной игры и удачи ✦'
+    - '&9━━━━━━━━━━━━━━━━━━'
+    - '&7✦ наш телеграм-канал ✦'
+    - '&9t.me.voidpe_bedrock'
+  position:
+    world: world
+    x: -6.5
+    'y': 68.5
+    z: 0.5
+donate:
+  lines:
+    - 'icon: ENDER_CHEST'
+    - '&6✦ ДОНАТ ✦'
+    - '&6════════════════════'
+    - '&7❯ странник &f— 12 ₽'
+    - '&a❯ герой &f— 20 ₽'
+    - '&9❯ рыцарь &f— 95 ₽'
+    - '&5❯ барон &f— 222 ₽'
+    - '&6❯ лорд &f— 350 ₽'
+    - '&c❯ князь &f— 540 ₽'
+    - '&d❯ император &f— 950 ₽'
+    - '&6════════════════════'
+    - '&b✦ ДОНАТ КЕЙСЫ ✦'
+    - '&b❯ донат кейс &f— 60 ₽'
+    - '&d❯ титул кейс &f— 15 ₽'
+    - '&a❯ кейс с осколками &f— 45 ₽'
+    - '&6════════════════════'
+    - '&f✦ &7ПОКУПКА В &bТГ &6@gulp19999 &f✦'
+  position:
+    world: world
+    x: 0.5
+    'y': 70.7
+    z: -6.5
+commands:
+  lines:
+    - 'icon: COMMAND_BLOCK'
+    - '&9✦ &bосновные команды &9✦'
+    - '&9━━━━━━━━━━━━━━━━━━'
+    - '&b/spawn &f- телепорт на спавн'
+    - '&b/warp &f- список варпов'
+    - '&b/home &f- телепорт домой'
+    - '&b/sethome &f- установить дом'
+    - '&b/pay &f- передать деньги'
+    - '&b/bal &f- ваш баланс'
+    - '&b/ah &f- аукцион'
+    - '&b/donate &f- привилегии'
+    - '&9━━━━━━━━━━━━━━━━━━'
+    - '&7VoidPe &f| &bприятной игры!'
+  position:
+    world: world
+    x: 0.5
+    'y': 69.6
+    z: 6.5
+privat_gold:
+  lines:
+    - 'icon: GOLD_INGOT'
+    - '&e✦ &6зᴏлᴏᴛᴏй пᴘиʙᴀᴛ &e✦'
+    - '&8• &7• &8• &7• &8• &7• &8• &7• &8•'
+    - '&fᴘᴀзᴍᴇᴘ зᴏны: &e5 &7x &e5 &7x &e5'
+    - '&8[&7бᴀзᴏʙый ᴘᴇгиᴏн&8]'
+  position:
+    world: world
+    x: -41.5
+    'y': 66.9
+    z: 35.5
+privat_reinforced:
+  lines:
+    - 'icon: NETHERITE_BLOCK'
+    - '&c✦ укреплённый приват ✦'
+    - '&8• &6• &8• &6• &8• &6• &8• &6• &8•'
+    - '&fразмер зоны: &e30 &7× &e30 &7× &e30'
+    - '&6✦ &eтолько в донат-магазине &6✦'
+    - '&8[&cэксклюзивный регион&8]'
+  position:
+    world: world
+    x: -48.5
+    'y': 67
+    z: 19.5
+privat_emerald_ore:
+  lines:
+    - 'icon: EMERALD_ORE'
+    - '&a✦ изумрудная руда ✦'
+    - '&8• &7• &8• &7• &8• &7• &8• &7• &8•'
+    - '&fразмер зоны: &a25 &7× &a25 &7× &a25'
+    - '&8[&2элитный регион&8]'
+  position:
+    world: world
+    x: -48.5
+    'y': 66.9
+    z: 23.5
+privat_diamond_ore:
+  lines:
+    - 'icon: DIAMOND_ORE'
+    - '&3✦ алмазная руда ✦'
+    - '&8• &7• &8• &7• &8• &7• &8• &7• &8•'
+    - '&fразмер зоны: &b15 &7× &b15 &7× &b15'
+    - '&8[&bпремиум регион&8]'
+  position:
+    world: world
+    x: -47.5
+    'y': 66.9
+    z: 27.5
+privat_diamond:
+  lines:
+    - 'icon: DIAMOND_BLOCK'
+    - '&b✦ алмазный приват ✦'
+    - '&8• &7• &8• &7• &8• &7• &8• &7• &8•'
+    - '&fразмер зоны: &b10 &7× &b10 &7× &b10'
+    - '&8[&3улучшенный регион&8]'
+  position:
+    world: world
+    x: -45.5
+    'y': 66.9
+    z: 31.5

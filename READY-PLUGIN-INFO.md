@@ -4,18 +4,22 @@
 
 Собранный `.jar` плагина **HolographicDisplays 3.0.5-optimized-bedrock**: исходники ветки `arena/b544f479-hologram`
 (существующие оптимизации HD) + рендерер без NMS для 1.20.5+/Purpurbedrock + система удержания FPS на телефонах
-(Bedrock FPS Guard) + урезание фиксированной стоимости тика по профилю spark.
+(Bedrock FPS Guard) + урезание фиксированной стоимости тика по профилю spark + текст строк на `TEXT_DISPLAY`
+(арморстенды больше не видны в принципе) + автосоздание 7 голограмм, перенесённых из DecentHolograms.
+Сборка от 2026-10-28 (см. таблицы ниже: jar 1011751 B, sha256 `a3cb8237…`).
 
 ## Файлы и контрольные суммы
 
 | Файл | Размер | Что внутри |
 |---|---|---|
-| `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` | 1001616 B | сам плагин — класть в `plugins/` |
+| `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar` | 1011751 B | сам плагин — класть в `plugins/` |
 | `HolographicDisplays-3.0.5-optimized-bedrock-build.zip` | см. `SHA256SUMS.txt` | готовый `.jar` + полный Maven-проект + `build.sh` + `BUILD-HERE.md` + лог сборки |
 | `SHA256SUMS.txt` | — | sha256 обоих файлов выше |
-| `dist/BUILD-LOG.txt` | 767819 B | полный лог `mvn clean package -DskipTests` (32 модуля, BUILD SUCCESS) |
+| `dist/BUILD-LOG.txt` | 80479 B | полный лог `mvn clean package -DskipTests` (31 модуль, BUILD SUCCESS за 10.4 с) |
+| `voidpe-all-holograms-database.yml` | 5996 B | готовый `database.yml` со всеми 8 голограммами (welcome + 7 из DecentHolograms) — ставить не обязательно, см. раздел про `builtin-holograms.yml` |
 
-sha256 jar: `68edb5418e47fe5562d4a28eb40841045847f9fd6bb3fbf3f247f8768ec093f1`
+sha256 jar: `a3cb82371b83e54844e3bdcc417b2d8a7349a7c0406236f82919241eb74c3787` (сборка 2026-10-28, run 40674310253)
+sha256 архива и обоих `.yml` — всегда в `SHA256SUMS.txt` (он обновляется вместе с jar'ом)
 
 Скачать (работает без авторизации, это публичный репозиторий):
 
@@ -27,13 +31,15 @@ https://github.com/gulp-tech/Hologram/raw/refs/heads/arena/3e48db95-hologram/Hol
 Зафиксированная копия той же сборки (этот коммит содержит ровно тот же `.jar`, что и сверху):
 
 ```
-https://github.com/gulp-tech/Hologram/raw/1f87ec99aef1c55017f91a7295ef533bfcef027d/dist/HolographicDisplays-3.0.5-optimized-bedrock.jar
+https://github.com/gulp-tech/Hologram/raw/041df3833e209af2402f49dd3de65977a8b679b0/dist/HolographicDisplays-3.0.5-optimized-bedrock.jar
 ```
 
 Контрольные суммы: `https://github.com/gulp-tech/Hologram/raw/refs/heads/arena/3e48db95-hologram/SHA256SUMS.txt`
 
-В архиве `.zip`: `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar`, `dist/BUILD-LOG.txt`,
-`HolographicDisplays/` (весь Maven-проект без `target/`), `BUILD-HERE.md`, `READY-PLUGIN-INFO.md`, `build.sh`.
+В архиве `.zip`: `dist/HolographicDisplays-3.0.5-optimized-bedrock.jar`, `dist/BUILD-LOG.txt` (ссылка на полный лог),
+`HolographicDisplays/` (весь Maven-проект без `target/`), `BUILD-HERE.md`, `READY-PLUGIN-INFO.md`,
+`optimized/OPTIMIZATION-NOTES.md`, `voidpe-*-database.yml`, `build.sh`. Архив пересобирается одной командой:
+`python3 ci/make-zip.py`.
 
 ## Как собран
 

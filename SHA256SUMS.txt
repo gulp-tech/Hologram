@@ -1,5 +1,8 @@
-# Контрольные суммы готовой сборки (2026-10-28)
+# Контрольные суммы готовой сборки (2026-10-28, ветка arena/3e48db95-hologram)
 # Проверка:  sha256sum <файл>
+# Установка: скачать jar, положить в plugins/ (заменив старый HolographicDisplays-*.jar), запустить сервер.
 
-68edb5418e47fe5562d4a28eb40841045847f9fd6bb3fbf3f247f8768ec093f1  dist/HolographicDisplays-3.0.5-optimized-bedrock.jar  (1001616 байт)
-4813f8934737a720439416e9d9525efabda2d68eb1a547ea89fa195d556a2ed2  HolographicDisplays-3.0.5-optimized-bedrock-build.zip  (1421109 байт)
+a3cb82371b83e54844e3bdcc417b2d8a7349a7c0406236f82919241eb74c3787  dist/HolographicDisplays-3.0.5-optimized-bedrock.jar  (1011751 байт)
+e189732874dee604ce65fc74440a3dd0c3ff15e97b42182a090eebfe49837087  HolographicDisplays-3.0.5-optimized-bedrock-build.zip  (1453804 байт)
+bfd9ad02d8c7bde8f502f1a4f369286745c11daac45e90f5ab2b15345d94b47c  voidpe-all-holograms-database.yml  (5996 байт)
+642963cd3551112bca823758f4c895fa3217b18c3d667bc6e421cb69a9ade1bf  voidpe-welcome-database.yml  (2186 байт)
