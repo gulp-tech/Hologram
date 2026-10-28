@@ -139,6 +139,13 @@ abstract class DisplayLine {
         }
     }
 
+    /**
+     * Whether there is work queued for this line which hasn't been applied to entities yet.
+     */
+    final boolean hasPendingRequests() {
+        return !showQueue.isEmpty() || !pendingContent.isEmpty();
+    }
+
     final void setRegistered(boolean registered) {
         this.registered = registered;
     }

@@ -137,6 +137,11 @@ public final class DisplayNMSManager implements NMSManager {
 
     private void unregister(DisplayLine line) {
         line.setRegistered(false);
+        if (line.hasPendingRequests()) {
+            // A show request arrived while the line was being released: it has to be ticked again, otherwise the
+            // hologram would stay invisible until something else touches it.
+            register(line);
+        }
     }
 
     /**
@@ -146,16 +151,24 @@ public final class DisplayNMSManager implements NMSManager {
     private void flush() {
         currentTick++;
 
-        for (Iterator<DisplayLine> iterator = lines.iterator(); iterator.hasNext();) {
-            DisplayLine line = iterator.next();
+        // CopyOnWriteArrayList iterators don't support remove(), so finished lines are collected and dropped in one
+        // batch after the loop: removing them while iterating used to throw UnsupportedOperationException on every
+        // tick, which both spammed the console and left the released lines registered forever.
+        List<DisplayLine> finished = null;
+        for (DisplayLine line : lines) {
             try {
                 line.tick();
                 if (line.isFinished()) {
-                    iterator.remove();
-                    unregister(line);
+                    if (finished == null) {
+                        finished = new ArrayList<DisplayLine>(2);
+                    }
+                    finished.add(line);
                 }
             } catch (Throwable t) {
-                iterator.remove();
+                if (finished == null) {
+                    finished = new ArrayList<DisplayLine>(2);
+                }
+                finished.add(line);
                 try {
                     line.discard();
                 } catch (Throwable ignored) {
@@ -164,64 +177,14 @@ public final class DisplayNMSManager implements NMSManager {
             }
         }
 
+        if (finished != null) {
+            lines.removeAll(finished);
+            for (DisplayLine line : finished) {
+                unregister(line);
+            }
+        }
+
         processVisibilitySyncs();
-    }
-
-    long getCurrentTick() {
-        return currentTick;
-    }
-
-    /**
-     * Queues a full visibility update for a player, spread over several ticks.
-     */
-    void requestVisibilitySync(Player player) {
-        pendingVisibilitySync.put(player, Integer.valueOf(0));
-    }
-
-    private void processVisibilitySyncs() {
-        if (pendingVisibilitySync.isEmpty()) {
-            return;
-        }
-
-        int budget = SYNC_LINES_PER_TICK;
-        List<DisplayLine> snapshot = new ArrayList<DisplayLine>(lines);
-        for (Iterator<Map.Entry<Player, Integer>> iterator = pendingVisibilitySync.entrySet().iterator();
-             iterator.hasNext();) {
-            Map.Entry<Player, Integer> entry = iterator.next();
-            Player player = entry.getKey();
-            if (!isOnline(player)) {
-                iterator.remove();
-                continue;
-            }
-
-            int index = entry.getValue().intValue();
-            int end = Math.min(snapshot.size(), index + budget);
-            for (; index < end; index++) {
-                try {
-                    snapshot.get(index).syncViewer(player);
-                } catch (Throwable t) {
-                    logError(t, "Can't update hologram visibility for " + player.getName());
-                }
-            }
-
-            budget -= (end - entry.getValue().intValue());
-            if (index >= snapshot.size()) {
-                iterator.remove(); // Every line of every hologram was visited
-            } else {
-                entry.setValue(Integer.valueOf(index));
-            }
-            if (budget <= 0) {
-                break;
-            }
-        }
-    }
-
-    private static boolean isOnline(Player player) {
-        try {
-            return player.isOnline();
-        } catch (Throwable t) {
-            return false; // A player which is leaving isn't worth an update
-        }
     }
 
     private void logError(Throwable t, String message) {
