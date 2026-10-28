@@ -96,12 +96,24 @@ else
   echo "  !! no downloadable placeholderapi found; relying on the pom default"
 fi
 
+# Network guards: a stalled socket read on repo1.maven.org used to hang the whole job for hours.
+NET_ARGS="-Dmaven.wagon.http.connectionTimeout=15000 -Dmaven.wagon.http.readTimeout=180000"
+NET_ARGS="$NET_ARGS -Daether.connector.connectTimeout=15000 -Daether.connector.requestTimeout=120000"
+NET_ARGS="$NET_ARGS -Daether.connector.http.retryHandler.count=3 -Dmaven.wagon.http.retryHandler.count=3"
+BUILD_TIMEOUT="${BUILD_TIMEOUT:-22m}"
+
 echo
 echo "=== mvn $GOALS $EXTRA_ARGS ==="
 cd "$PROJ_DIR" || { echo "cannot enter $PROJ_DIR" >| "$OUT/status"; exit 1; }
 # shellcheck disable=SC2086
-mvn -B -ntp $GOALS $EXTRA_ARGS > "$LOG" 2>&1
-rc=$?
+if command -v timeout >/dev/null 2>&1; then
+  timeout "$BUILD_TIMEOUT" mvn -B -ntp $GOALS $EXTRA_ARGS $NET_ARGS > "$LOG" 2>&1
+  rc=$?
+  [ "$rc" -eq 124 ] && echo "!! maven was killed after $BUILD_TIMEOUT (no progress - usually a stalled download)" >> "$LOG"
+else
+  mvn -B -ntp $GOALS $EXTRA_ARGS $NET_ARGS > "$LOG" 2>&1
+  rc=$?
+fi
 echo "maven exit code: $rc"
 echo "$rc" >| "$OUT/status"
 
