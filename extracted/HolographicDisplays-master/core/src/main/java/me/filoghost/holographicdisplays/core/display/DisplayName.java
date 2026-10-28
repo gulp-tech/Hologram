@@ -27,6 +27,7 @@ final class DisplayName {
     private static @Nullable Method serializerDeserializeMethod;
     private static @Nullable Object legacySectionSerializer;
     private static boolean reportedFailure;
+    private static boolean detected; // API lookups are done once per server start
 
     private DisplayName() {
     }
