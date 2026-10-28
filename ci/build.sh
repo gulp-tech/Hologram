@@ -97,9 +97,11 @@ else
 fi
 
 # Network guards: a stalled socket read on repo1.maven.org used to hang the whole job for hours.
-NET_ARGS="-Dmaven.wagon.http.connectionTimeout=15000 -Dmaven.wagon.http.readTimeout=180000"
-NET_ARGS="$NET_ARGS -Daether.connector.connectTimeout=15000 -Daether.connector.requestTimeout=120000"
-NET_ARGS="$NET_ARGS -Daether.connector.http.retryHandler.count=3 -Dmaven.wagon.http.retryHandler.count=3"
+# A slow repository must fail fast and let the next one answer, instead of holding a socket for minutes: on a
+# congested runner the default timeouts made every artifact wait, and the build never reached compilation.
+NET_ARGS="-Dmaven.wagon.http.connectionTimeout=8000 -Dmaven.wagon.http.readTimeout=30000"
+NET_ARGS="$NET_ARGS -Daether.connector.connectTimeout=8000 -Daether.connector.requestTimeout=30000"
+NET_ARGS="$NET_ARGS -Daether.connector.http.retryHandler.count=2 -Dmaven.wagon.http.retryHandler.count=2"
 BUILD_TIMEOUT="${BUILD_TIMEOUT:-22m}"
 
 echo
@@ -107,7 +109,7 @@ echo "=== mvn $GOALS $EXTRA_ARGS ==="
 cd "$PROJ_DIR" || { echo "cannot enter $PROJ_DIR" >| "$OUT/status"; exit 1; }
 # shellcheck disable=SC2086
 if command -v timeout >/dev/null 2>&1; then
-  timeout "$BUILD_TIMEOUT" mvn -B -ntp $GOALS $EXTRA_ARGS $NET_ARGS > "$LOG" 2>&1
+  timeout "$BUILD_TIMEOUT" mvn -B -ntp -nsu $GOALS $EXTRA_ARGS $NET_ARGS > "$LOG" 2>&1
   rc=$?
   [ "$rc" -eq 124 ] && echo "!! maven was killed after $BUILD_TIMEOUT (no progress - usually a stalled download)" >> "$LOG"
 else
