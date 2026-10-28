@@ -1,0 +1,36 @@
+#
+# Готовая база голограмм HolographicDisplays (файл database.yml).
+#
+# Как поставить:
+#   1) остановить сервер (или до /holograms reload) и сохранить старый файл:
+#      mv plugins/HolographicDisplays/database.yml plugins/HolographicDisplays/database.yml.bak
+#   2) положить ЭТОТ файл как plugins/HolographicDisplays/database.yml
+#   3) /holograms reload   (или запустить сервер)
+#
+# Вариант без замены файла: /holograms list -> /holograms delete <имя> -> /holograms reload,
+# и плагин сам создаст такую же голограмму (в базе не останется ни одной голограммы).
+#
+# Формат HD: имя голограммы -> lines (список строк) + position.
+# Отступы и ковычки важны. HD работает на кодировке 1.8 и hex-цвета (&#1E90FF) не понимает,
+# поэтому палитра приведена к ближайшим legacy-кодам: &9 синий, &b бирюзовый, &f белый, &7 серый.
+# Высота строки в HD не задаётся: промежуток общий - settings space-between-lines (по умолчанию 0.02),
+# у строки-иконки он свой. Видимость задаёт не display-range/update-range, а settings view-range.
+#
+# Далее голограмма обычная: /holo edit welcome, /holo moveHere welcome, /holo delete welcome.
+# При любой правке плагин перезапишет этот файл и комментарии уберёт - это нормально.
+#
+welcome:
+  lines:
+  - 'icon: BEACON'
+  - '&b✦ &9V&9o&bi&bd&fP&fe &b✦'
+  - '&9━━━━━━━━━━━━━━━━━━'
+  - '&fдобро пожаловать на сервер!'
+  - '&bприятной игры и удачи ✦'
+  - '&9━━━━━━━━━━━━━━━━━━'
+  - '&7✦ наш телеграм-канал ✦'
+  - '&9t.me.voidpe_bedrock'
+  position:
+    world: world
+    x: -6.5
+    y: 68.5
+    z: 0.5

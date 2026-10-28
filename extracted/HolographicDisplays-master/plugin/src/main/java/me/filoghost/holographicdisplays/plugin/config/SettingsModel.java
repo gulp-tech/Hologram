@@ -57,6 +57,29 @@ public class SettingsModel implements MappedConfig {
     @Path("display.interaction-entities")
     boolean displayInteractionEntities = true;
 
+    /*
+     * The welcome hologram is created once, only when database.yml has no holograms at all, and saved into it like
+     * any other hologram: delete or edit it and it won't come back. Set this to false to never create it.
+     */
+    @Path("welcome-hologram.enabled")
+    boolean welcomeHologramEnabled = true;
+
+    /*
+     * Where the welcome hologram is put. Its name is "welcome", so afterwards it can be moved with
+     * /holo moveHere welcome and edited with /holo edit welcome.
+     */
+    @Path("welcome-hologram.world")
+    String welcomeHologramWorld = "world";
+
+    @Path("welcome-hologram.x")
+    double welcomeHologramX = -6.5;
+
+    @Path("welcome-hologram.y")
+    double welcomeHologramY = 68.5;
+
+    @Path("welcome-hologram.z")
+    double welcomeHologramZ = 0.5;
+
     @Path("placeholders.PlaceholderAPI.enabled")
     boolean placeholderAPIEnabled = true;
 

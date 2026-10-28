@@ -22,6 +22,7 @@ import me.filoghost.holographicdisplays.plugin.config.ConfigManager;
 import me.filoghost.holographicdisplays.plugin.config.InternalHologramConfig;
 import me.filoghost.holographicdisplays.plugin.config.InternalHologramLoadException;
 import me.filoghost.holographicdisplays.plugin.config.Settings;
+import me.filoghost.holographicdisplays.plugin.welcome.WelcomeHologram;
 import me.filoghost.holographicdisplays.plugin.config.upgrade.AnimationsLegacyUpgrade;
 import me.filoghost.holographicdisplays.plugin.config.upgrade.DatabaseLegacyUpgrade;
 import me.filoghost.holographicdisplays.plugin.config.upgrade.SymbolsLegacyUpgrade;
@@ -99,6 +100,9 @@ public class HolographicDisplays extends FCommonsPlugin {
         new AnimationsLegacyUpgrade(configManager, errorCollector).tryRun();
         new DatabaseLegacyUpgrade(configManager, errorCollector).tryRun();
 
+        // Created before load(), which can add the welcome hologram through it
+        internalHologramEditor = new InternalHologramEditor(internalHologramManager, configManager);
+
         // Load the configuration
         load(errorCollector);
 
@@ -110,7 +114,6 @@ public class HolographicDisplays extends FCommonsPlugin {
                 + Settings.bedrockGuard.viewRange + " blocks" : "disabled"));
 
         // Commands
-        internalHologramEditor = new InternalHologramEditor(internalHologramManager, configManager);
         new HologramCommandManager(this, internalHologramEditor).register(this);
 
         // Setup external plugin hooks
@@ -191,6 +194,10 @@ public class HolographicDisplays extends FCommonsPlugin {
             } catch (InternalHologramLoadException e) {
                 errorCollector.add(e, "error while loading hologram \"" + hologramConfig.getName() + "\"");
             }
+        }
+
+        if (hologramConfigs.isEmpty()) {
+            WelcomeHologram.createIfDatabaseIsEmpty(internalHologramEditor);
         }
     }
 

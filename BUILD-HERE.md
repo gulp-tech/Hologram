@@ -153,3 +153,31 @@ display:
 В `config.yml`: `settings.view-range: 32`, `bedrock-guard.detection: everyone`, `view-range: 16`,
 `max-visible-lines: 8`. Если при входе всё равно крашит — временно `display.interaction-entities: false`.
 Подробности: `optimized/OPTIMIZATION-NOTES.md`, раздел «Клиентский FPS».
+
+## Приветственная голограмма встроена в плагин
+
+`Default hologram. Change it with /holo edit` — это не «арморстенд плагина», а голограмма, созданная командой
+`/holo create` без текста: она лежит в `plugins/HolographicDisplays/database.yml` и удаляется командой
+`/holo delete <имя>` (`/holograms list` покажет имя).
+
+Сборка `2026-10-28` умеет саму голограмму спавна: **если база голограмм пуста**, при старте создаётся голограмма
+`welcome` со строками `icon: BEACON`, заголовком VoidPe, приветствием и ссылкой на телеграм-канал — на координатах
+из вашего конфига DecentHolograms (`world -6.5 68.5 0.5`). Она сохраняется в `database.yml` как обычная:
+правится `/holo edit welcome`, двигается `/holo moveHere welcome`, удаляется `/holo delete welcome` — и обратно уже
+не возвращается, потому что база перестаёт быть пустой.
+
+Ключи (все необязательные, значения по умолчанию = ваш конфиг):
+
+```yaml
+welcome-hologram:
+  enabled: true
+  world: world
+  x: -6.5
+  y: 68.5
+  z: 0.5
+```
+
+Гекс-цвета `&#1E90FF` HD не поддерживает (плагин таргетит кодировку 1.8), палитра переведена в ближайшие
+legacy-коды; индивидуальные `height` у строк в HD тоже нет — интервал общий `space-between-lines`.
+Ручной вариант вместо «пустой базы»: файл `voidpe-welcome-database.yml` в корне репозитория — это готовый
+`database.yml`, его можно положить в `plugins/HolographicDisplays/` и сделать `/holograms reload`.

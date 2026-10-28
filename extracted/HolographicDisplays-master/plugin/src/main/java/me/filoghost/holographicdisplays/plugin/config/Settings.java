@@ -46,6 +46,11 @@ public class Settings {
     public static Map<String, ServerAddress> pingerServerAddresses;
 
     public static String rendererPreference;
+    public static boolean welcomeHologramEnabled;
+    public static String welcomeHologramWorld;
+    public static double welcomeHologramX;
+    public static double welcomeHologramY;
+    public static double welcomeHologramZ;
     public static double displayTextYOffset;
     public static int displayTextUpdateIntervalTicks;
     public static boolean displayInteractionEntities;
@@ -58,6 +63,11 @@ public class Settings {
         viewRange = config.viewRange;
         rendererPreference = config.renderer != null ? config.renderer.trim().toLowerCase(java.util.Locale.ROOT) : "auto";
         displayTextYOffset = config.displayTextYOffset;
+        welcomeHologramEnabled = config.welcomeHologramEnabled;
+        welcomeHologramWorld = config.welcomeHologramWorld;
+        welcomeHologramX = config.welcomeHologramX;
+        welcomeHologramY = config.welcomeHologramY;
+        welcomeHologramZ = config.welcomeHologramZ;
         displayTextUpdateIntervalTicks = Math.max(1, config.displayTextUpdateIntervalTicks);
         displayInteractionEntities = config.displayInteractionEntities;
         CoreGlobalConfig.rendererPreference = rendererPreference;
