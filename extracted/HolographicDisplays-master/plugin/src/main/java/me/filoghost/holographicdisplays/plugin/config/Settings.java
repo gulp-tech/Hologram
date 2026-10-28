@@ -47,6 +47,8 @@ public class Settings {
 
     public static String rendererPreference;
     public static double displayTextYOffset;
+    public static int displayTextUpdateIntervalTicks;
+    public static boolean displayInteractionEntities;
 
     /** Mutated in place, the Bedrock guard keeps a reference to it. */
     public static final BedrockGuardConfig bedrockGuard = new BedrockGuardConfig();
@@ -56,8 +58,12 @@ public class Settings {
         viewRange = config.viewRange;
         rendererPreference = config.renderer != null ? config.renderer.trim().toLowerCase(java.util.Locale.ROOT) : "auto";
         displayTextYOffset = config.displayTextYOffset;
+        displayTextUpdateIntervalTicks = Math.max(1, config.displayTextUpdateIntervalTicks);
+        displayInteractionEntities = config.displayInteractionEntities;
         CoreGlobalConfig.rendererPreference = rendererPreference;
         CoreGlobalConfig.displayTextYOffset = displayTextYOffset;
+        CoreGlobalConfig.displayTextUpdateIntervalTicks = displayTextUpdateIntervalTicks;
+        CoreGlobalConfig.displayInteractionEntities = displayInteractionEntities;
         quickEditCommands = config.quickEditCommands;
         timeFormat = parseTimeFormatter(config.timeFormat, config.timeZone, errorCollector);
         updateNotification = config.updateNotification;

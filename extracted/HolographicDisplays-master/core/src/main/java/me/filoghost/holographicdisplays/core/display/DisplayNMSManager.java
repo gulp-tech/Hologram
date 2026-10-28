@@ -24,7 +24,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +44,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class DisplayNMSManager implements NMSManager {
 
     private static final long FLUSH_INTERVAL_TICKS = 1L;
+    /**
+     * How many lines are re-synced per tick for one player. A player who joins has to be shown (or hidden from) every
+     * line of every hologram, and sending all of that in a single tick overflows the queue of a client which is
+     * already busy loading the world - which shows up as a stutter, or as a crash on clients with a small buffer.
+     */
+    private static final int SYNC_LINES_PER_TICK = 24;
     private static final long ERROR_LOG_INTERVAL_MILLIS = 20000L;
 
     private final Plugin plugin;
@@ -53,6 +61,10 @@ public final class DisplayNMSManager implements NMSManager {
     private @Nullable BukkitTask flushTask;
     private boolean listenersRegistered;
     private long lastErrorLogMillis;
+    private long currentTick;
+
+    // Main thread only: players waiting for their visibility to be re-applied, and how far each of them got
+    private final Map<Player, Integer> pendingVisibilitySync = new LinkedHashMap<Player, Integer>();
 
     public DisplayNMSManager(Plugin plugin) {
         this.plugin = plugin;
@@ -105,6 +117,7 @@ public final class DisplayNMSManager implements NMSManager {
         }
         lines.clear();
         markerIDByEntityID.clear();
+        pendingVisibilitySync.clear();
         packetListener = null;
         stopped = true;
     }
@@ -131,6 +144,8 @@ public final class DisplayNMSManager implements NMSManager {
      * entities is only allowed there.
      */
     private void flush() {
+        currentTick++;
+
         for (Iterator<DisplayLine> iterator = lines.iterator(); iterator.hasNext();) {
             DisplayLine line = iterator.next();
             try {
@@ -148,6 +163,65 @@ public final class DisplayNMSManager implements NMSManager {
                 logError(t, "Error while updating a hologram, its entities were removed");
             }
         }
+
+        processVisibilitySyncs();
+    }
+
+    long getCurrentTick() {
+        return currentTick;
+    }
+
+    /**
+     * Queues a full visibility update for a player, spread over several ticks.
+     */
+    void requestVisibilitySync(Player player) {
+        pendingVisibilitySync.put(player, Integer.valueOf(0));
+    }
+
+    private void processVisibilitySyncs() {
+        if (pendingVisibilitySync.isEmpty()) {
+            return;
+        }
+
+        int budget = SYNC_LINES_PER_TICK;
+        List<DisplayLine> snapshot = new ArrayList<DisplayLine>(lines);
+        for (Iterator<Map.Entry<Player, Integer>> iterator = pendingVisibilitySync.entrySet().iterator();
+             iterator.hasNext();) {
+            Map.Entry<Player, Integer> entry = iterator.next();
+            Player player = entry.getKey();
+            if (!isOnline(player)) {
+                iterator.remove();
+                continue;
+            }
+
+            int index = entry.getValue().intValue();
+            int end = Math.min(snapshot.size(), index + budget);
+            for (; index < end; index++) {
+                try {
+                    snapshot.get(index).syncViewer(player);
+                } catch (Throwable t) {
+                    logError(t, "Can't update hologram visibility for " + player.getName());
+                }
+            }
+
+            budget -= (end - entry.getValue().intValue());
+            if (index >= snapshot.size()) {
+                iterator.remove(); // Every line of every hologram was visited
+            } else {
+                entry.setValue(Integer.valueOf(index));
+            }
+            if (budget <= 0) {
+                break;
+            }
+        }
+    }
+
+    private static boolean isOnline(Player player) {
+        try {
+            return player.isOnline();
+        } catch (Throwable t) {
+            return false; // A player which is leaving isn't worth an update
+        }
     }
 
     private void logError(Throwable t, String message) {
@@ -160,8 +234,8 @@ public final class DisplayNMSManager implements NMSManager {
     }
 
     /**
-     * Makes sure a player sees exactly the entities it should, used after events which can reset client-side
-     * visibility (join, respawn, world change).
+     * Applies the visibility of every line to one player at once, used by {@link #requestVisibilitySync(Player)}
+     * when there is nothing else to do this tick.
      */
     void syncPlayer(Player player) {
         for (DisplayLine line : lines) {
@@ -286,7 +360,8 @@ public final class DisplayNMSManager implements NMSManager {
          * Runs after the core had a chance to update its viewers for this tick.
          */
         private void syncPlayerLater(final Player player) {
-            Bukkit.getScheduler().runTask(plugin, () -> syncPlayer(player));
+            // One tick later the core knows which lines this player should see; the update itself is spread out
+            Bukkit.getScheduler().runTask(plugin, () -> requestVisibilitySync(player));
         }
 
         @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

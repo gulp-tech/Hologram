@@ -7,6 +7,7 @@ package me.filoghost.holographicdisplays.core.display;
 
 import me.filoghost.fcommons.logging.Log;
 import me.filoghost.holographicdisplays.common.PositionCoordinates;
+import me.filoghost.holographicdisplays.core.CoreGlobalConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -126,6 +127,9 @@ final class DisplayEntities {
     }
 
     private static @Nullable Entity spawnInteraction(World world, Location location) {
+        if (!CoreGlobalConfig.displayInteractionEntities) {
+            return null; // Clicks are disabled on purpose, the hitbox entity is not needed at all
+        }
         EntityType type;
         try {
             type = EntityType.valueOf("INTERACTION");

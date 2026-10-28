@@ -6,6 +6,7 @@
 package me.filoghost.holographicdisplays.core.display;
 
 import me.filoghost.holographicdisplays.common.PositionCoordinates;
+import me.filoghost.holographicdisplays.core.CoreGlobalConfig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +52,7 @@ abstract class DisplayLine {
     private final Set<Player> wantedViewers = new HashSet<>();
 
     private @Nullable PositionCoordinates appliedPosition;
+    private long lastContentTick = Long.MIN_VALUE;
     private volatile boolean registered;
     private boolean finished;
 
@@ -179,7 +181,15 @@ abstract class DisplayLine {
             return;
         }
 
+        // 4. Move the entities if the line moved. This happens before the content throttle below: a hologram which
+        // follows a player must not lag behind it just because the text of its lines changes quickly.
+        applyPosition();
+
         // 3. Reuse existing entities for the contents which are needed now
+        if (!canChangeContent()) {
+            return; // The text of this line changed too recently: keep the pending content for a later tick
+        }
+
         Set<Object> neededContent = new HashSet<>();
         for (Player player : wantedViewers) {
             Object content = pendingContent.get(player);
@@ -224,15 +234,6 @@ abstract class DisplayLine {
             onEntityRemoved(spare);
         }
 
-        // 4. Move the entities if the line moved
-        PositionCoordinates position = this.position;
-        if (position != null && !position.equals(appliedPosition)) {
-            for (Entity entity : entityByContent.values()) {
-                DisplayEntities.move(entity, position, yOffset());
-            }
-            appliedPosition = position;
-        }
-
         // 5. Show each viewer the entity matching its content
         for (Player player : wantedViewers) {
             Object content = pendingContent.get(player);
@@ -249,7 +250,13 @@ abstract class DisplayLine {
             Object previousContent = contentByViewer.put(player, content);
             if (previousContent != null) {
                 Entity previousEntity = entityByContent.get(previousContent);
-                if (previousEntity != null && previousEntity != entity) {
+                if (previousEntity == entity) {
+                    // The very same entity is already shown to this player, only its content was updated. Sending
+                    // showEntity again would make the client destroy and re-create it, which is a visible flicker
+                    // and the most expensive thing this renderer could do to a weak device.
+                    continue;
+                }
+                if (previousEntity != null) {
                     manager.hide(player, previousEntity);
                 }
             }
@@ -257,6 +264,60 @@ abstract class DisplayLine {
         }
 
         finished = false;
+    }
+
+    /**
+     * Whether the contents of this line may be applied to entities on this tick. Viewers which don't have an entity
+     * yet are always served, so that a hologram doesn't appear with a delay: only re-writing the text of something
+     * which is already visible is spread out over time, because a new name tag is rebuilt by the client every time.
+     */
+    private boolean canChangeContent() {
+        long interval = CoreGlobalConfig.displayTextUpdateIntervalTicks;
+        if (interval <= 1) {
+            lastContentTick = manager.getCurrentTick();
+            return true;
+        }
+
+        boolean needsNewEntity = false;
+        boolean needsContentChange = false;
+        for (Player player : wantedViewers) {
+            Object content = pendingContent.get(player);
+            if (content == null) {
+                continue;
+            }
+            Object shown = contentByViewer.get(player);
+            if (shown == null) {
+                needsNewEntity = true;
+            } else if (!shown.equals(content)) {
+                needsContentChange = true;
+            }
+        }
+
+        if (!needsContentChange) {
+            return true; // Nothing to re-write, or the entities have to be created regardless
+        }
+        if (needsNewEntity) {
+            lastContentTick = manager.getCurrentTick();
+            return true;
+        }
+
+        long tick = manager.getCurrentTick();
+        if (tick - lastContentTick >= interval) {
+            lastContentTick = tick;
+            return true;
+        }
+        return false;
+    }
+
+    private void applyPosition() {
+        PositionCoordinates position = this.position;
+        if (position == null || position.equals(appliedPosition)) {
+            return;
+        }
+        for (Entity entity : entityByContent.values()) {
+            DisplayEntities.move(entity, position, yOffset());
+        }
+        appliedPosition = position;
     }
 
     private @Nullable Entity createEntity(Object content) {

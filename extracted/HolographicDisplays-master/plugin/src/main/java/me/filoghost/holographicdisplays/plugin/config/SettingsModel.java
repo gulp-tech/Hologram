@@ -42,6 +42,21 @@ public class SettingsModel implements MappedConfig {
     @Path("display.text-y-offset")
     double displayTextYOffset = -0.29;
 
+    /*
+     * Minimum number of ticks between two updates of the text of a line in "display" mode. Lower values make
+     * fast changing placeholders (health, TPS, coordinates) smoother but cost more frames on the clients,
+     * higher values save FPS. 1 restores the "update every tick" behaviour, 0 or less is treated as 1.
+     */
+    @Path("display.text-update-interval-ticks")
+    int displayTextUpdateIntervalTicks = 3;
+
+    /*
+     * Clickable lines use an extra invisible INTERACTION entity as the hitbox. Turn it off if clients on this
+     * server misbehave around that entity type - holograms then just won't be clickable.
+     */
+    @Path("display.interaction-entities")
+    boolean displayInteractionEntities = true;
+
     @Path("placeholders.PlaceholderAPI.enabled")
     boolean placeholderAPIEnabled = true;
 
