@@ -135,3 +135,21 @@ display:
 без лямбд и запускается раз в 5 тиков, тик ядра имеет быстрый путь при отсутствии голограмм, а Bedrock FPS Guard
 читает координаты игрока и список голограмм один раз на тик вместо двух. Подробности — в
 `optimized/OPTIMIZATION-NOTES.md`.
+
+## FPS на телефонах: что делать прямо сейчас
+
+Код рендерера изменён так, чтобы сущности голограмм не пересоздавались на клиенте при смене текста, обновления
+имён ограничены `display.text-update-interval-ticks: 3`, а синхронизация видимости при входе раздавлена по тикам
+(залп спавнов на входе — типичная причина «крашит при заходе» на мобильных клиентах).
+
+Главный же переключатель — не тик сервера, а сколько именигов клиент рисует одновременно:
+
+```
+/holograms bedrockguard everyone     # на сервере без Floodgate автоопределение не включается само
+/holograms bedrockguard radius 16
+/holograms bedrockguard budget 8
+```
+
+В `config.yml`: `settings.view-range: 32`, `bedrock-guard.detection: everyone`, `view-range: 16`,
+`max-visible-lines: 8`. Если при входе всё равно крашит — временно `display.interaction-entities: false`.
+Подробности: `optimized/OPTIMIZATION-NOTES.md`, раздел «Клиентский FPS».
