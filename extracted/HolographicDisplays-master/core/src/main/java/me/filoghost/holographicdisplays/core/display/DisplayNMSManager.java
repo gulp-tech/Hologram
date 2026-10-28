@@ -187,6 +187,64 @@ public final class DisplayNMSManager implements NMSManager {
         processVisibilitySyncs();
     }
 
+    long getCurrentTick() {
+        return currentTick;
+    }
+
+    /**
+     * Queues a full visibility update for a player, spread over several ticks instead of one burst of packets.
+     */
+    void requestVisibilitySync(Player player) {
+        pendingVisibilitySync.put(player, Integer.valueOf(0));
+    }
+
+    private void processVisibilitySyncs() {
+        if (pendingVisibilitySync.isEmpty()) {
+            return;
+        }
+
+        int budget = SYNC_LINES_PER_TICK;
+        List<DisplayLine> snapshot = new ArrayList<DisplayLine>(lines);
+        for (Iterator<Map.Entry<Player, Integer>> iterator = pendingVisibilitySync.entrySet().iterator();
+             iterator.hasNext();) {
+            Map.Entry<Player, Integer> entry = iterator.next();
+            Player player = entry.getKey();
+            if (!isOnline(player)) {
+                iterator.remove();
+                continue;
+            }
+
+            int start = entry.getValue().intValue();
+            int index = start;
+            int end = Math.min(snapshot.size(), index + budget);
+            for (; index < end; index++) {
+                try {
+                    snapshot.get(index).syncViewer(player);
+                } catch (Throwable t) {
+                    logError(t, "Can't update hologram visibility for " + player.getName());
+                }
+            }
+
+            budget -= (index - start);
+            if (index >= snapshot.size()) {
+                iterator.remove(); // Every line of every hologram was visited
+            } else {
+                entry.setValue(Integer.valueOf(index));
+            }
+            if (budget <= 0) {
+                break;
+            }
+        }
+    }
+
+    private static boolean isOnline(Player player) {
+        try {
+            return player.isOnline();
+        } catch (Throwable t) {
+            return false; // A player which is leaving isn't worth an update
+        }
+    }
+
     private void logError(Throwable t, String message) {
         long now = System.currentTimeMillis();
         if (now - lastErrorLogMillis < ERROR_LOG_INTERVAL_MILLIS) {
@@ -197,8 +255,7 @@ public final class DisplayNMSManager implements NMSManager {
     }
 
     /**
-     * Applies the visibility of every line to one player at once, used by {@link #requestVisibilitySync(Player)}
-     * when there is nothing else to do this tick.
+     * Applies the visibility of every line to one player at once.
      */
     void syncPlayer(Player player) {
         for (DisplayLine line : lines) {
