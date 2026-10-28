@@ -1,5 +1,5 @@
-build: gulp-tech/Hologram@4536ae23fea9da9159a165008d1b4d5a5f05587f run:40673813082 attempt:1
-maven exit code: 1
+build: gulp-tech/Hologram@8094b9f903422c902f8c74f0c11a5e0ec40c596a run:40674310253 attempt:1
+maven exit code: 0
 
 ----- ci/build.sh console -----
 === environment ===
@@ -46,73 +46,73 @@ pom.xml
   using placeholderapi 2.12.3 from https://repo.extendedclip.com/content/repositories/placeholderapi
 
 === mvn clean package -DskipTests -Dplaceholderapi.version=2.12.3 ===
-maven exit code: 1
+maven exit code: 0
 --- reactor summary ---
 Reactor Summary for HolographicDisplays Parent 3.0.5-SNAPSHOT:
 
-HolographicDisplays Plugin ......................... SKIPPED
-HolographicDisplays Example ........................ SKIPPED
-HolographicDisplays Example DeathHolograms ......... SKIPPED
-HolographicDisplays Example PowerUps ............... SKIPPED
-HolographicDisplays Parent ......................... SUCCESS [  2.890 s]
-HolographicDisplays Common ......................... SUCCESS [  1.358 s]
-HolographicDisplays API ............................ SUCCESS [  0.225 s]
-HolographicDisplays Legacy API ..................... SUCCESS [  0.020 s]
-HolographicDisplays Legacy API v1 .................. SUCCESS [  0.191 s]
-HolographicDisplays Legacy API v2 .................. SUCCESS [  0.108 s]
-HolographicDisplays NMS ............................ SUCCESS [  0.009 s]
-HolographicDisplays NMS Common ..................... SUCCESS [  0.166 s]
-HolographicDisplays NMS v1_8_R3 .................... SUCCESS [  0.436 s]
-HolographicDisplays NMS v1_9_R2 .................... SUCCESS [  0.183 s]
-HolographicDisplays NMS v1_10_R1 ................... SUCCESS [  0.169 s]
-HolographicDisplays NMS v1_11_R1 ................... SUCCESS [  0.174 s]
-HolographicDisplays NMS v1_12_R1 ................... SUCCESS [  0.218 s]
-HolographicDisplays NMS v1_13_R2 ................... SUCCESS [  0.206 s]
-HolographicDisplays NMS v1_14_R1 ................... SUCCESS [  0.183 s]
-HolographicDisplays NMS v1_15_R1 ................... SUCCESS [  0.118 s]
-HolographicDisplays NMS v1_16_R3 ................... SUCCESS [  0.128 s]
-HolographicDisplays NMS v1_17_R1 ................... SUCCESS [  0.202 s]
-HolographicDisplays NMS v1_18_R1 ................... SUCCESS [  0.305 s]
-HolographicDisplays NMS v1_18_R2 ................... SUCCESS [  0.229 s]
-HolographicDisplays NMS v1_19_R1 ................... SUCCESS [  0.237 s]
-HolographicDisplays NMS v1_19_R2 ................... SUCCESS [  0.205 s]
-HolographicDisplays NMS v1_19_R3 ................... SUCCESS [  0.219 s]
-HolographicDisplays NMS v1_20_R1 ................... SUCCESS [  0.185 s]
-HolographicDisplays NMS v1_20_R2 ................... SUCCESS [  0.224 s]
-HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.256 s]
-[ERROR] HolographicDisplays Core ........................... FAILURE [  0.348 s]
+HolographicDisplays Parent ......................... SUCCESS [  1.923 s]
+HolographicDisplays Common ......................... SUCCESS [  1.294 s]
+HolographicDisplays API ............................ SUCCESS [  0.238 s]
+HolographicDisplays Legacy API ..................... SUCCESS [  0.014 s]
+HolographicDisplays Legacy API v1 .................. SUCCESS [  0.165 s]
+HolographicDisplays Legacy API v2 .................. SUCCESS [  0.138 s]
+HolographicDisplays NMS ............................ SUCCESS [  0.016 s]
+HolographicDisplays NMS Common ..................... SUCCESS [  0.219 s]
+HolographicDisplays NMS v1_8_R3 .................... SUCCESS [  0.360 s]
+HolographicDisplays NMS v1_9_R2 .................... SUCCESS [  0.199 s]
+HolographicDisplays NMS v1_10_R1 ................... SUCCESS [  0.185 s]
+HolographicDisplays NMS v1_11_R1 ................... SUCCESS [  0.168 s]
+HolographicDisplays NMS v1_12_R1 ................... SUCCESS [  0.213 s]
+HolographicDisplays NMS v1_13_R2 ................... SUCCESS [  0.207 s]
+HolographicDisplays NMS v1_14_R1 ................... SUCCESS [  0.187 s]
+HolographicDisplays NMS v1_15_R1 ................... SUCCESS [  0.142 s]
+HolographicDisplays NMS v1_16_R3 ................... SUCCESS [  0.161 s]
+HolographicDisplays NMS v1_17_R1 ................... SUCCESS [  0.208 s]
+HolographicDisplays NMS v1_18_R1 ................... SUCCESS [  0.272 s]
+HolographicDisplays NMS v1_18_R2 ................... SUCCESS [  0.273 s]
+HolographicDisplays NMS v1_19_R1 ................... SUCCESS [  0.271 s]
+HolographicDisplays NMS v1_19_R2 ................... SUCCESS [  0.265 s]
+HolographicDisplays NMS v1_19_R3 ................... SUCCESS [  0.186 s]
+HolographicDisplays NMS v1_20_R1 ................... SUCCESS [  0.215 s]
+HolographicDisplays NMS v1_20_R2 ................... SUCCESS [  0.199 s]
+HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.229 s]
+HolographicDisplays Core ........................... SUCCESS [  0.770 s]
+HolographicDisplays Plugin ......................... SUCCESS [  1.301 s]
+HolographicDisplays Example ........................ SUCCESS [  0.007 s]
+HolographicDisplays Example DeathHolograms ......... SUCCESS [  0.044 s]
+HolographicDisplays Example PowerUps ............... SUCCESS [  0.047 s]
 ------------------------------------------------------------------------
-[ERROR] BUILD FAILURE
+BUILD SUCCESS
 --- tail ---
-[INFO] HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.256 s]
-[ERROR] HolographicDisplays Core ........................... FAILURE [  0.348 s]
+[INFO] HolographicDisplays NMS v1_12_R1 ................... SUCCESS [  0.213 s]
+[INFO] HolographicDisplays NMS v1_13_R2 ................... SUCCESS [  0.207 s]
+[INFO] HolographicDisplays NMS v1_14_R1 ................... SUCCESS [  0.187 s]
+[INFO] HolographicDisplays NMS v1_15_R1 ................... SUCCESS [  0.142 s]
+[INFO] HolographicDisplays NMS v1_16_R3 ................... SUCCESS [  0.161 s]
+[INFO] HolographicDisplays NMS v1_17_R1 ................... SUCCESS [  0.208 s]
+[INFO] HolographicDisplays NMS v1_18_R1 ................... SUCCESS [  0.272 s]
+[INFO] HolographicDisplays NMS v1_18_R2 ................... SUCCESS [  0.273 s]
+[INFO] HolographicDisplays NMS v1_19_R1 ................... SUCCESS [  0.271 s]
+[INFO] HolographicDisplays NMS v1_19_R2 ................... SUCCESS [  0.265 s]
+[INFO] HolographicDisplays NMS v1_19_R3 ................... SUCCESS [  0.186 s]
+[INFO] HolographicDisplays NMS v1_20_R1 ................... SUCCESS [  0.215 s]
+[INFO] HolographicDisplays NMS v1_20_R2 ................... SUCCESS [  0.199 s]
+[INFO] HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.229 s]
+[INFO] HolographicDisplays Core ........................... SUCCESS [  0.770 s]
+[INFO] HolographicDisplays Plugin ......................... SUCCESS [  1.301 s]
+[INFO] HolographicDisplays Example ........................ SUCCESS [  0.007 s]
+[INFO] HolographicDisplays Example DeathHolograms ......... SUCCESS [  0.044 s]
+[INFO] HolographicDisplays Example PowerUps ............... SUCCESS [  0.047 s]
 [INFO] ------------------------------------------------------------------------
-[ERROR] BUILD FAILURE
+[INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  9.399 s
-[INFO] Finished at: 2026-10-28T10:39:40Z
+[INFO] Total time:  10.400 s
+[INFO] Finished at: 2026-10-28T10:43:40Z
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.16.0:compile (default-compile) on project holographicdisplays-core: Compilation failure: Compilation failure: 
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[35,13] cannot find symbol
-[ERROR]   symbol:   variable detected
-[ERROR]   location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[38,9] cannot find symbol
-[ERROR]   symbol:   variable detected
-[ERROR]   location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
-[ERROR] 
-[ERROR] After correcting the problems, you can resume the build with the command
-[ERROR]   mvn <args> -rf :holographicdisplays-core
-built: ./api/target/holographicdisplays-api-3.0.5-SNAPSHOT.jar
-total 20
--rw-r--r-- 1 runner runner 15578 Oct 28 10:39 holographicdisplays-api-3.0.5-SNAPSHOT.jar
--rw-r--r-- 1 runner runner     2 Oct 28 10:39 status
+built: plugin/target/holographicdisplays-plugin-3.0.5-SNAPSHOT.jar
+total 996
+-rw-r--r-- 1 runner runner 1011751 Oct 28 10:43 holographicdisplays-plugin-3.0.5-SNAPSHOT.jar
+-rw-r--r-- 1 runner runner       2 Oct 28 10:43 status
 
 ----- maven log -----
 [INFO] Scanning for projects...
@@ -1001,79 +1001,230 @@ total 20
 [INFO] --- compiler:3.16.0:compile (default-compile) @ holographicdisplays-core ---
 [INFO] Recompiling the module because of changed dependency.
 [INFO] Compiling 91 source files with javac [debug target 1.8] to target/classes
+[WARNING] bootstrap class path not set in conjunction with -source 8
 [INFO] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/HolographicDisplaysCore.java: Some input files use or override a deprecated API.
 [INFO] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/HolographicDisplaysCore.java: Recompile with -Xlint:deprecation for details.
-[INFO] -------------------------------------------------------------
-[WARNING] COMPILATION WARNING : 
-[INFO] -------------------------------------------------------------
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ holographicdisplays-core ---
+[INFO] skip non existing resourceDirectory /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ holographicdisplays-core ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 5 source files with javac [debug target 1.8] to target/test-classes
 [WARNING] bootstrap class path not set in conjunction with -source 8
-[INFO] 1 warning
-[INFO] -------------------------------------------------------------
-[INFO] -------------------------------------------------------------
-[ERROR] COMPILATION ERROR : 
-[INFO] -------------------------------------------------------------
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[35,13] cannot find symbol
-  symbol:   variable detected
-  location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[38,9] cannot find symbol
-  symbol:   variable detected
-  location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[INFO] 2 errors 
-[INFO] -------------------------------------------------------------
+[INFO] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/test/java/me/filoghost/holographicdisplays/core/api/v2/V2HologramTest.java: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/test/java/me/filoghost/holographicdisplays/core/api/v2/V2HologramTest.java uses or overrides a deprecated API.
+[INFO] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/test/java/me/filoghost/holographicdisplays/core/api/v2/V2HologramTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ holographicdisplays-core ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.2.0:jar (default-jar) @ holographicdisplays-core ---
+[INFO] Building jar: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/target/holographicdisplays-core-3.0.5-SNAPSHOT.jar
+[INFO] 
+[INFO] ----< me.filoghost.holographicdisplays:holographicdisplays-plugin >-----
+[INFO] Building HolographicDisplays Plugin 3.0.5-SNAPSHOT               [28/31]
+[INFO]   from plugin/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ holographicdisplays-plugin ---
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (default) @ holographicdisplays-plugin ---
+[INFO] 
+[INFO] --- directory:0.3.1:highest-basedir (set-root-dir) @ holographicdisplays-plugin ---
+[INFO] Highest basedir set to: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master
+[INFO] 
+[INFO] --- checkstyle:3.1.2:check (checkstyle-check) @ holographicdisplays-plugin ---
+[INFO] 
+[INFO] --- build-helper:3.2.0:bsh-property (set-plugin-version) @ holographicdisplays-plugin ---
+[WARNING] Ignoring checksum policy 'warn' contributed by repository apache.snapshots (http://repository.apache.org/snapshots) declared by a remote artifact descriptor: it would downgrade the checksum policy 'fail' of the mirror serving it; set aether.remoteRepositoryManager.rawRepositoryChecksumPolicyDowngrade=true to restore the legacy weakest-wins merge
+[WARNING] Ignoring checksum policy 'warn' contributed by repository codehaus.snapshots (http://snapshots.repository.codehaus.org) declared by a remote artifact descriptor: it would downgrade the checksum policy 'fail' of the mirror serving it; set aether.remoteRepositoryManager.rawRepositoryChecksumPolicyDowngrade=true to restore the legacy weakest-wins merge
+Project version: 3.0.5-SNAPSHOT
+Build number: null
+Computed plugin version: 3.0.5-SNAPSHOT
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ holographicdisplays-plugin ---
+[INFO] Copying 4 resources from src/main/resources to target/classes
+[INFO] Copying 2 resources from .. to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ holographicdisplays-plugin ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 90 source files with javac [debug target 1.8] to target/classes
+[WARNING] bootstrap class path not set in conjunction with -source 8
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ holographicdisplays-plugin ---
+[INFO] skip non existing resourceDirectory /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/plugin/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ holographicdisplays-plugin ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug target 1.8] to target/test-classes
+[WARNING] bootstrap class path not set in conjunction with -source 8
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ holographicdisplays-plugin ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.2.0:jar (default-jar) @ holographicdisplays-plugin ---
+[INFO] Building jar: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/plugin/target/holographicdisplays-plugin-3.0.5-SNAPSHOT.jar
+[INFO] 
+[INFO] --- shade:3.2.4:shade (default) @ holographicdisplays-plugin ---
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-api:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-common:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-core:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-legacy-api-v1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-legacy-api-v2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_8_r3:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-common:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_9_r2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_10_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_11_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_12_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_13_r2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_14_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_15_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_16_r3:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_17_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_18_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_18_r2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_19_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_19_r2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_19_r3:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_20_r1:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_20_r2:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including me.filoghost.holographicdisplays:holographicdisplays-nms-v1_20_r3:jar:3.0.5-SNAPSHOT in the shaded jar.
+[INFO] Including org.bstats:bstats-bukkit-lite:jar:1.7 in the shaded jar.
+[INFO] Including me.filoghost.updatechecker:updatechecker:jar:1.0.0 in the shaded jar.
+[INFO] Including me.filoghost.fcommons:fcommons:jar:1.2.8-SNAPSHOT in the shaded jar.
+[WARNING] bstats-bukkit-lite-1.7.jar, fcommons-1.2.8-SNAPSHOT.jar, holographicdisplays-api-3.0.5-SNAPSHOT.jar, holographicdisplays-common-3.0.5-SNAPSHOT.jar, holographicdisplays-core-3.0.5-SNAPSHOT.jar, holographicdisplays-legacy-api-v1-3.0.5-SNAPSHOT.jar, holographicdisplays-legacy-api-v2-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-common-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_10_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_11_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_12_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_13_r2-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_14_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_15_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_16_r3-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_17_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_18_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_18_r2-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_19_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_19_r2-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_19_r3-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_20_r1-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_20_r2-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_20_r3-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_8_r3-3.0.5-SNAPSHOT.jar, holographicdisplays-nms-v1_9_r2-3.0.5-SNAPSHOT.jar, holographicdisplays-plugin-3.0.5-SNAPSHOT.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/MANIFEST.MF
+[WARNING] fcommons-1.2.8-SNAPSHOT.jar, holographicdisplays-plugin-3.0.5-SNAPSHOT.jar, updatechecker-1.0.0.jar define 1 overlapping resource: 
+[WARNING]   - LICENSE.txt
+[WARNING] maven-shade-plugin has detected that some class files are
+[WARNING] present in two or more JARs. When this happens, only one
+[WARNING] single version of the class is copied to the uber jar.
+[WARNING] Usually this is not harmful and you can skip these warnings,
+[WARNING] otherwise try to manually exclude artifacts based on
+[WARNING] mvn dependency:tree -Ddetail=true and the above output.
+[WARNING] See http://maven.apache.org/plugins/maven-shade-plugin/
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/plugin/target/holographicdisplays-plugin-3.0.5-SNAPSHOT.jar with /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/plugin/target/holographicdisplays-plugin-3.0.5-SNAPSHOT-shaded.jar
+[INFO] 
+[INFO] ----< me.filoghost.holographicdisplays:holographicdisplays-example >----
+[INFO] Building HolographicDisplays Example 3.0.5-SNAPSHOT              [29/31]
+[INFO]   from example/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ holographicdisplays-example ---
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (default) @ holographicdisplays-example ---
+[INFO] 
+[INFO] --- directory:0.3.1:highest-basedir (set-root-dir) @ holographicdisplays-example ---
+[INFO] Highest basedir set to: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master
+[INFO] 
+[INFO] --- checkstyle:3.1.2:check (checkstyle-check) @ holographicdisplays-example ---
+[INFO] 
+[INFO] --< me.filoghost.holographicdisplays:holographicdisplays-example-deathholograms >--
+[INFO] Building HolographicDisplays Example DeathHolograms 3.0.5-SNAPSHOT [30/31]
+[INFO]   from example/death-holograms/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ holographicdisplays-example-deathholograms ---
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (default) @ holographicdisplays-example-deathholograms ---
+[INFO] 
+[INFO] --- directory:0.3.1:highest-basedir (set-root-dir) @ holographicdisplays-example-deathholograms ---
+[INFO] Highest basedir set to: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master
+[INFO] 
+[INFO] --- checkstyle:3.1.2:check (checkstyle-check) @ holographicdisplays-example-deathholograms ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ holographicdisplays-example-deathholograms ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ holographicdisplays-example-deathholograms ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug target 1.8] to target/classes
+[WARNING] bootstrap class path not set in conjunction with -source 8
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ holographicdisplays-example-deathholograms ---
+[INFO] skip non existing resourceDirectory /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/example/death-holograms/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ holographicdisplays-example-deathholograms ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ holographicdisplays-example-deathholograms ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.2.0:jar (default-jar) @ holographicdisplays-example-deathholograms ---
+[INFO] Building jar: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/example/death-holograms/target/holographicdisplays-example-deathholograms-3.0.5-SNAPSHOT.jar
+[INFO] 
+[INFO] --< me.filoghost.holographicdisplays:holographicdisplays-example-powerups >--
+[INFO] Building HolographicDisplays Example PowerUps 3.0.5-SNAPSHOT     [31/31]
+[INFO]   from example/power-ups/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ holographicdisplays-example-powerups ---
+[INFO] 
+[INFO] --- enforcer:3.0.0:enforce (default) @ holographicdisplays-example-powerups ---
+[INFO] 
+[INFO] --- directory:0.3.1:highest-basedir (set-root-dir) @ holographicdisplays-example-powerups ---
+[INFO] Highest basedir set to: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master
+[INFO] 
+[INFO] --- checkstyle:3.1.2:check (checkstyle-check) @ holographicdisplays-example-powerups ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ holographicdisplays-example-powerups ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ holographicdisplays-example-powerups ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug target 1.8] to target/classes
+[WARNING] bootstrap class path not set in conjunction with -source 8
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ holographicdisplays-example-powerups ---
+[INFO] skip non existing resourceDirectory /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/example/power-ups/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ holographicdisplays-example-powerups ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ holographicdisplays-example-powerups ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.2.0:jar (default-jar) @ holographicdisplays-example-powerups ---
+[INFO] Building jar: /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/example/power-ups/target/holographicdisplays-example-powerups-3.0.5-SNAPSHOT.jar
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary for HolographicDisplays Parent 3.0.5-SNAPSHOT:
 [INFO] 
-[INFO] HolographicDisplays Plugin ......................... SKIPPED
-[INFO] HolographicDisplays Example ........................ SKIPPED
-[INFO] HolographicDisplays Example DeathHolograms ......... SKIPPED
-[INFO] HolographicDisplays Example PowerUps ............... SKIPPED
-[INFO] HolographicDisplays Parent ......................... SUCCESS [  2.890 s]
-[INFO] HolographicDisplays Common ......................... SUCCESS [  1.358 s]
-[INFO] HolographicDisplays API ............................ SUCCESS [  0.225 s]
-[INFO] HolographicDisplays Legacy API ..................... SUCCESS [  0.020 s]
-[INFO] HolographicDisplays Legacy API v1 .................. SUCCESS [  0.191 s]
-[INFO] HolographicDisplays Legacy API v2 .................. SUCCESS [  0.108 s]
-[INFO] HolographicDisplays NMS ............................ SUCCESS [  0.009 s]
-[INFO] HolographicDisplays NMS Common ..................... SUCCESS [  0.166 s]
-[INFO] HolographicDisplays NMS v1_8_R3 .................... SUCCESS [  0.436 s]
-[INFO] HolographicDisplays NMS v1_9_R2 .................... SUCCESS [  0.183 s]
-[INFO] HolographicDisplays NMS v1_10_R1 ................... SUCCESS [  0.169 s]
-[INFO] HolographicDisplays NMS v1_11_R1 ................... SUCCESS [  0.174 s]
-[INFO] HolographicDisplays NMS v1_12_R1 ................... SUCCESS [  0.218 s]
-[INFO] HolographicDisplays NMS v1_13_R2 ................... SUCCESS [  0.206 s]
-[INFO] HolographicDisplays NMS v1_14_R1 ................... SUCCESS [  0.183 s]
-[INFO] HolographicDisplays NMS v1_15_R1 ................... SUCCESS [  0.118 s]
-[INFO] HolographicDisplays NMS v1_16_R3 ................... SUCCESS [  0.128 s]
-[INFO] HolographicDisplays NMS v1_17_R1 ................... SUCCESS [  0.202 s]
-[INFO] HolographicDisplays NMS v1_18_R1 ................... SUCCESS [  0.305 s]
-[INFO] HolographicDisplays NMS v1_18_R2 ................... SUCCESS [  0.229 s]
-[INFO] HolographicDisplays NMS v1_19_R1 ................... SUCCESS [  0.237 s]
-[INFO] HolographicDisplays NMS v1_19_R2 ................... SUCCESS [  0.205 s]
-[INFO] HolographicDisplays NMS v1_19_R3 ................... SUCCESS [  0.219 s]
-[INFO] HolographicDisplays NMS v1_20_R1 ................... SUCCESS [  0.185 s]
-[INFO] HolographicDisplays NMS v1_20_R2 ................... SUCCESS [  0.224 s]
-[INFO] HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.256 s]
-[ERROR] HolographicDisplays Core ........................... FAILURE [  0.348 s]
+[INFO] HolographicDisplays Parent ......................... SUCCESS [  1.923 s]
+[INFO] HolographicDisplays Common ......................... SUCCESS [  1.294 s]
+[INFO] HolographicDisplays API ............................ SUCCESS [  0.238 s]
+[INFO] HolographicDisplays Legacy API ..................... SUCCESS [  0.014 s]
+[INFO] HolographicDisplays Legacy API v1 .................. SUCCESS [  0.165 s]
+[INFO] HolographicDisplays Legacy API v2 .................. SUCCESS [  0.138 s]
+[INFO] HolographicDisplays NMS ............................ SUCCESS [  0.016 s]
+[INFO] HolographicDisplays NMS Common ..................... SUCCESS [  0.219 s]
+[INFO] HolographicDisplays NMS v1_8_R3 .................... SUCCESS [  0.360 s]
+[INFO] HolographicDisplays NMS v1_9_R2 .................... SUCCESS [  0.199 s]
+[INFO] HolographicDisplays NMS v1_10_R1 ................... SUCCESS [  0.185 s]
+[INFO] HolographicDisplays NMS v1_11_R1 ................... SUCCESS [  0.168 s]
+[INFO] HolographicDisplays NMS v1_12_R1 ................... SUCCESS [  0.213 s]
+[INFO] HolographicDisplays NMS v1_13_R2 ................... SUCCESS [  0.207 s]
+[INFO] HolographicDisplays NMS v1_14_R1 ................... SUCCESS [  0.187 s]
+[INFO] HolographicDisplays NMS v1_15_R1 ................... SUCCESS [  0.142 s]
+[INFO] HolographicDisplays NMS v1_16_R3 ................... SUCCESS [  0.161 s]
+[INFO] HolographicDisplays NMS v1_17_R1 ................... SUCCESS [  0.208 s]
+[INFO] HolographicDisplays NMS v1_18_R1 ................... SUCCESS [  0.272 s]
+[INFO] HolographicDisplays NMS v1_18_R2 ................... SUCCESS [  0.273 s]
+[INFO] HolographicDisplays NMS v1_19_R1 ................... SUCCESS [  0.271 s]
+[INFO] HolographicDisplays NMS v1_19_R2 ................... SUCCESS [  0.265 s]
+[INFO] HolographicDisplays NMS v1_19_R3 ................... SUCCESS [  0.186 s]
+[INFO] HolographicDisplays NMS v1_20_R1 ................... SUCCESS [  0.215 s]
+[INFO] HolographicDisplays NMS v1_20_R2 ................... SUCCESS [  0.199 s]
+[INFO] HolographicDisplays NMS v1_20_R3 ................... SUCCESS [  0.229 s]
+[INFO] HolographicDisplays Core ........................... SUCCESS [  0.770 s]
+[INFO] HolographicDisplays Plugin ......................... SUCCESS [  1.301 s]
+[INFO] HolographicDisplays Example ........................ SUCCESS [  0.007 s]
+[INFO] HolographicDisplays Example DeathHolograms ......... SUCCESS [  0.044 s]
+[INFO] HolographicDisplays Example PowerUps ............... SUCCESS [  0.047 s]
 [INFO] ------------------------------------------------------------------------
-[ERROR] BUILD FAILURE
+[INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  9.399 s
-[INFO] Finished at: 2026-10-28T10:39:40Z
+[INFO] Total time:  10.400 s
+[INFO] Finished at: 2026-10-28T10:43:40Z
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.16.0:compile (default-compile) on project holographicdisplays-core: Compilation failure: Compilation failure: 
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[35,13] cannot find symbol
-[ERROR]   symbol:   variable detected
-[ERROR]   location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[ERROR] /home/runner/work/Hologram/Hologram/extracted/HolographicDisplays-master/core/src/main/java/me/filoghost/holographicdisplays/core/display/DisplayName.java:[38,9] cannot find symbol
-[ERROR]   symbol:   variable detected
-[ERROR]   location: class me.filoghost.holographicdisplays.core.display.DisplayName
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
-[ERROR] 
-[ERROR] After correcting the problems, you can resume the build with the command
-[ERROR]   mvn <args> -rf :holographicdisplays-core
